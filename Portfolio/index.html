@@ -1,0 +1,2853 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Balaji V — Senior Product Designer</title>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Playfair+Display:ital,wght@0,700;0,900;1,700;1,900&display=swap"
+    rel="stylesheet">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      background: #6BB8E8;
+      margin: 0;
+      overflow: hidden;
+      font-family: 'Press Start 2P', monospace;
+    }
+
+    canvas {
+      display: block;
+      width: 100vw;
+      height: 100vh;
+      image-rendering: pixelated;
+      image-rendering: crisp-edges;
+    }
+
+    #overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      pointer-events: none;
+      overflow: hidden;
+      z-index: 10;
+    }
+
+    .section {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-start;
+      padding: 100px 20px 25vh;
+      transition: opacity 0.1s;
+    }
+
+    .section {
+      pointer-events: auto;
+    }
+
+    /* Hero */
+    #sec-hero {
+      align-items: flex-start;
+      justify-content: center;
+      text-align: left;
+      padding-left: clamp(20px, 6vw, 80px);
+      padding-right: clamp(16px, 5vw, 60px);
+    }
+
+    #sec-hero .hero-line {
+      font-family: 'Press Start 2P', monospace;
+      font-size: clamp(20px, 5.1vw, 64px);
+      font-weight: 900;
+      color: #FFD700;
+      line-height: 1.6;
+      text-shadow: 3px 3px 0 rgba(0, 0, 0, 0.4);
+      max-width: 70vw;
+    }
+
+    #sec-hero .hero-line .mint {
+      color: #FFD700;
+    }
+
+    #sec-hero .hero-line {
+      margin-bottom: clamp(16px, 4vw, 36px);
+    }
+
+    #sec-hero .hero-bio {
+      font-family: 'Press Start 2P', monospace;
+      font-size: clamp(9px, 1.6vw, 14px);
+      color: rgba(255, 255, 255, 0.7);
+      line-height: 2.2;
+      max-width: 600px;
+      text-align: left;
+    }
+
+    #sec-hero .scroll-hint {
+      font-size: clamp(7px, 2vw, 13px);
+      color: rgba(255, 255, 255, 0.5);
+      animation: bounce 1.5s infinite;
+      margin-top: clamp(16px, 4vw, 40px);
+    }
+
+    @keyframes bounce {
+
+      0%,
+      100% {
+        transform: translateY(0);
+      }
+
+      50% {
+        transform: translateY(8px);
+      }
+    }
+
+    /* Pixel Game Boy */
+    #pixel-gameboy {
+      position: fixed;
+      right: clamp(10px, 6vw, 80px);
+      bottom: clamp(80px, 18vh, 180px);
+      z-index: 15;
+      pointer-events: none;
+      transition: opacity 0.5s ease, transform 0.5s ease;
+    }
+
+    #pixel-gameboy.hidden {
+      opacity: 0;
+      transform: scale(0.8) translateY(20px);
+      pointer-events: none;
+    }
+
+    .gameboy-body {
+      width: clamp(160px, 28vw, 280px);
+      min-height: clamp(220px, 38vw, 380px);
+      background: #9B3DBE;
+      border: 5px solid #1a1a2e;
+      border-radius: 0;
+      padding: clamp(12px, 2.5vw, 22px);
+      box-shadow: 8px 8px 0 #1a1a2e, inset -4px -4px 0 #7B2D8E, inset 4px 4px 0 #b860e0;
+      position: relative;
+      image-rendering: pixelated;
+    }
+
+    .gameboy-screen-frame {
+      background: #1a1a2e;
+      border: 4px solid #FFD700;
+      border-radius: 0;
+      padding: clamp(8px, 1.5vw, 14px);
+      margin-bottom: clamp(12px, 2vw, 20px);
+      box-shadow: inset 3px 3px 0 #333, inset -3px -3px 0 #000;
+    }
+
+    .gameboy-screen {
+      background: #c8e8a0;
+      border: 3px solid #4a6a30;
+      border-radius: 0;
+      padding: clamp(10px, 2vw, 18px);
+      text-align: center;
+      image-rendering: pixelated;
+      box-shadow: inset 2px 2px 0 #a0c880, inset -2px -2px 0 #90b870;
+    }
+
+    .gameboy-screen .screen-title {
+      font-family: 'Press Start 2P', monospace;
+      font-size: clamp(12px, 2.2vw, 22px);
+      color: #2a4a10;
+      line-height: 1.6;
+      text-shadow: 2px 2px 0 #a0c880;
+    }
+
+    .gameboy-screen .screen-sub {
+      font-family: 'Press Start 2P', monospace;
+      font-size: clamp(5px, 1vw, 9px);
+      color: #4a6a30;
+      margin-top: 6px;
+      line-height: 1.4;
+    }
+
+    .gameboy-controls {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: clamp(8px, 1.5vw, 16px) clamp(4px, 1vw, 10px);
+    }
+
+    /* D-pad — blocky pixel style */
+    .dpad {
+      width: clamp(36px, 6vw, 54px);
+      height: clamp(36px, 6vw, 54px);
+      position: relative;
+    }
+
+    .dpad-h,
+    .dpad-v {
+      position: absolute;
+      background: #1a1a2e;
+      border-radius: 0;
+      box-shadow: 2px 2px 0 #000;
+    }
+
+    .dpad-h {
+      width: 100%;
+      height: 33%;
+      top: 33%;
+      left: 0;
+    }
+
+    .dpad-v {
+      width: 33%;
+      height: 100%;
+      top: 0;
+      left: 33%;
+    }
+
+    .dpad-center {
+      position: absolute;
+      width: 33%;
+      height: 33%;
+      top: 33%;
+      left: 33%;
+      background: #2a2a4e;
+    }
+
+    /* Action buttons — square pixel style */
+    .gameboy-btns {
+      display: flex;
+      gap: clamp(6px, 1vw, 10px);
+    }
+
+    .gb-btn {
+      width: clamp(18px, 3vw, 28px);
+      height: clamp(18px, 3vw, 28px);
+      border-radius: 0;
+      border: 3px solid #1a1a2e;
+      box-shadow: 2px 2px 0 #000, inset -2px -2px 0 rgba(0, 0, 0, 0.3), inset 2px 2px 0 rgba(255, 255, 255, 0.3);
+    }
+
+    .gb-btn-a {
+      background: #FF4444;
+    }
+
+    .gb-btn-b {
+      background: #FFD700;
+    }
+
+    /* Bottom label */
+    .gameboy-label {
+      font-family: 'Press Start 2P', monospace;
+      font-size: clamp(5px, 1vw, 8px);
+      color: rgba(255, 255, 255, 0.6);
+      text-align: center;
+      margin-top: clamp(8px, 1.5vw, 14px);
+      letter-spacing: 3px;
+      text-shadow: 1px 1px 0 #000;
+    }
+
+    #gb-reset-btn {
+      display: none;
+      pointer-events: auto;
+      font-family: 'Press Start 2P', monospace;
+      font-size: clamp(5px, 0.9vw, 7px);
+      color: #fff;
+      background: #1a1a2e;
+      border: 2px solid #444;
+      padding: clamp(4px, 0.8vw, 8px) clamp(10px, 2vw, 20px);
+      margin: clamp(6px, 1vw, 10px) auto 0;
+      text-align: center;
+      cursor: pointer;
+      letter-spacing: 2px;
+      box-shadow: 2px 2px 0 #000, inset -1px -1px 0 rgba(0, 0, 0, 0.4), inset 1px 1px 0 rgba(255, 255, 255, 0.15);
+      user-select: none;
+      transition: transform 0.1s, box-shadow 0.1s;
+      width: fit-content;
+    }
+
+    #gb-reset-btn:hover {
+      background: #2a2a4e;
+    }
+
+    #gb-reset-btn:active {
+      transform: translate(2px, 2px);
+      box-shadow: 0 0 0 #000, inset -1px -1px 0 rgba(0, 0, 0, 0.4), inset 1px 1px 0 rgba(255, 255, 255, 0.15);
+    }
+
+    /* Pixel characters next to gameboy */
+    .gb-chars {
+      position: absolute;
+      bottom: -10px;
+      left: -20px;
+      right: -20px;
+      display: flex;
+      justify-content: space-between;
+      pointer-events: none;
+    }
+
+    .gb-chars .px-icon {
+      margin: 0;
+    }
+
+    @media (max-width: 768px) {
+      #pixel-gameboy {
+        display: none !important;
+      }
+
+      /* Nav menu mobile */
+      #nav-menu {
+        gap: 3px;
+      }
+
+      .nav-menu-btn {
+        font-size: 5px;
+        padding: 4px 6px;
+        border-width: 2px;
+        border-bottom-width: 3px;
+      }
+
+      #nav-label {
+        font-size: 6px;
+      }
+
+      #nav-label span {
+        font-size: 4px;
+      }
+
+      /* Hero mobile */
+      #sec-hero .hero-line {
+        font-size: clamp(14px, 4.5vw, 28px);
+        max-width: 90vw;
+      }
+
+      #sec-hero .hero-bio {
+        font-size: clamp(6px, 1.4vw, 10px);
+        max-width: 90vw;
+      }
+
+      /* Retro box mobile */
+      .retro-box {
+        max-width: 92vw;
+        width: 92vw;
+        padding: clamp(16px, 4vw, 28px);
+        min-height: 40vh;
+        font-size: clamp(8px, 2vw, 12px);
+        line-height: 2;
+      }
+
+      .retro-box h2 {
+        font-size: clamp(12px, 3.5vw, 20px);
+        margin-bottom: 12px;
+      }
+
+      /* Skills grid mobile */
+      .skills-grid {
+        gap: 8px;
+      }
+
+      .skill-badge {
+        padding: clamp(10px, 2.5vw, 18px) clamp(6px, 1.5vw, 10px);
+        font-size: clamp(5px, 1.4vw, 9px);
+        border-width: 3px;
+        box-shadow: 4px 4px 0 rgba(0, 0, 0, 0.5);
+      }
+
+      /* Project cards mobile */
+      .project-card {
+        flex: 0 0 clamp(220px, 75vw, 320px) !important;
+      }
+
+      .project-card .card-img {
+        height: clamp(100px, 25vw, 160px);
+      }
+
+      .project-card .card-body {
+        padding: clamp(10px, 2.5vw, 18px);
+      }
+
+      .project-card h3 {
+        font-size: clamp(8px, 2.2vw, 14px);
+      }
+
+      .project-card p {
+        font-size: clamp(5px, 1.3vw, 9px);
+      }
+
+      /* Experience section mobile */
+      #sec-experience {
+        transform: scale(0.55);
+        transform-origin: center center;
+      }
+
+      #sec-experience h2 {
+        font-size: clamp(10px, 3.5vw, 18px) !important;
+      }
+
+      .exp-card {
+        min-width: unset;
+        width: 80vw;
+        min-height: auto;
+        padding: clamp(12px, 2.5vw, 20px);
+        border-width: 3px;
+        box-shadow: 4px 4px 0 rgba(0, 0, 0, 0.5);
+      }
+
+      .exp-card h3 {
+        font-size: clamp(12px, 3vw, 18px) !important;
+      }
+
+      .exp-card p {
+        font-size: clamp(5px, 1.2vw, 8px) !important;
+        line-height: 1.6 !important;
+      }
+
+      .stat-num {
+        font-size: clamp(10px, 2.5vw, 16px);
+      }
+
+      .stat-label {
+        font-size: clamp(4px, 0.8vw, 6px);
+      }
+
+      .exp-tag {
+        font-size: clamp(4px, 1vw, 6px);
+        padding: 3px 6px;
+        border-width: 2px;
+        box-shadow: 2px 2px 0 rgba(0, 0, 0, 0.2);
+      }
+
+      .opp-card {
+        min-width: unset;
+        width: 80vw;
+        min-height: auto;
+        padding: clamp(12px, 2.5vw, 20px);
+        border-width: 3px;
+      }
+
+      .opp-card h3 {
+        font-size: clamp(7px, 1.8vw, 11px) !important;
+      }
+
+      .opp-card p {
+        font-size: clamp(5px, 1.2vw, 8px) !important;
+      }
+
+      .lets-talk-btn {
+        font-size: clamp(5px, 1.2vw, 8px);
+        padding: 6px 14px;
+        border-width: 2px;
+        border-bottom-width: 3px;
+      }
+
+      /* Contact bento mobile */
+      .contact-bento {
+        grid-template-columns: 1fr;
+        width: 88vw;
+      }
+
+      .contact-bento .bento-main {
+        padding: clamp(14px, 3vw, 24px);
+      }
+
+      .contact-bento .bento-main h2 {
+        font-size: clamp(12px, 3.5vw, 20px);
+      }
+
+      .contact-bento .bento-main p {
+        font-size: clamp(5px, 1.5vw, 9px);
+      }
+
+      .contact-bento .bento-card {
+        padding: clamp(10px, 2.5vw, 20px);
+      }
+
+      .contact-bento .bento-card a {
+        font-size: clamp(5px, 1.4vw, 10px);
+      }
+
+      /* Pixel decorations smaller on mobile */
+      .px-icon {
+        transform: scale(1.2) !important;
+        margin: 10px !important;
+      }
+
+      .pixel-deco,
+      .pixel-deco-bl,
+      .pixel-deco-br {
+        display: none;
+      }
+    }
+
+    /* Retro box style */
+    .retro-box {
+      background: rgba(16, 15, 15, 0.9);
+      border: 4px solid #FFD700;
+      border-bottom-width: 6px;
+      padding: clamp(24px, 5vw, 48px);
+      max-width: 85vw;
+      width: 750px;
+      min-height: 50vh;
+      box-shadow: 6px 6px 0 #000;
+      color: #fff;
+      font-size: clamp(10px, 2.2vw, 16px);
+      line-height: 2.4;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      position: relative;
+      overflow: visible;
+    }
+
+    .retro-box h2 {
+      font-size: clamp(16px, 4vw, 28px);
+      color: #FFD700;
+      text-shadow: 3px 3px 0 #000;
+      margin-bottom: 20px;
+      text-align: center;
+    }
+
+    /* About card — pixel dialog style */
+    #sec-about .retro-box {
+      background: linear-gradient(160deg, #b8f0f0 0%, #8ee0e0 30%, #6dcfcf 70%, #5abfbf 100%);
+      border: 6px solid #1a1a2e;
+      border-bottom-width: 8px;
+      box-shadow: 8px 8px 0 rgba(0, 0, 0, 0.5), inset 0 0 0 3px #2a2a3e;
+      color: #1a1a2e;
+    }
+
+    #sec-about .retro-box h2 {
+      color: #1a1a2e;
+      text-shadow: 2px 2px 0 rgba(255, 255, 255, 0.4);
+    }
+
+    #sec-about .retro-box p {
+      color: #2a2a3e;
+    }
+
+    /* Glare overlay */
+    #sec-about .retro-box::before {
+      content: '';
+      position: absolute;
+      top: 8px;
+      right: 12px;
+      width: 30%;
+      height: 40%;
+      background: linear-gradient(170deg, rgba(255, 255, 255, 0.5) 0%, rgba(255, 255, 255, 0.15) 40%, transparent 60%);
+      border-radius: 2px;
+      pointer-events: none;
+      z-index: 2;
+    }
+
+    /* Small glare dot */
+    #sec-about .retro-box::after {
+      content: '';
+      position: absolute;
+      top: 15px;
+      right: 20px;
+      width: 12px;
+      height: 12px;
+      background: rgba(255, 255, 255, 0.7);
+      border-radius: 0;
+      pointer-events: none;
+      z-index: 3;
+    }
+
+    /* Skills card — warm peach/coral */
+    #sec-skills .retro-box {
+      background: linear-gradient(160deg, #ffd6b8 0%, #ffbb90 30%, #ff9f6e 70%, #f08858 100%);
+      border: 6px solid #1a1a2e;
+      border-bottom-width: 8px;
+      box-shadow: 8px 8px 0 rgba(0, 0, 0, 0.5), inset 0 0 0 3px #2a2a3e;
+      color: #1a1a2e;
+    }
+
+    #sec-skills .retro-box h2 {
+      color: #1a1a2e;
+      text-shadow: 2px 2px 0 rgba(255, 255, 255, 0.4);
+    }
+
+    #sec-skills .retro-box::before {
+      content: '';
+      position: absolute;
+      top: 8px;
+      right: 12px;
+      width: 25%;
+      height: 35%;
+      background: linear-gradient(170deg, rgba(255, 255, 255, 0.45) 0%, rgba(255, 255, 255, 0.1) 40%, transparent 60%);
+      pointer-events: none;
+      z-index: 2;
+    }
+
+    #sec-skills .retro-box::after {
+      content: '';
+      position: absolute;
+      top: 15px;
+      right: 20px;
+      width: 10px;
+      height: 10px;
+      background: rgba(255, 255, 255, 0.6);
+      pointer-events: none;
+      z-index: 3;
+    }
+
+    #sec-skills .skill-badge {
+      background: rgba(30, 20, 10, 0.15);
+      border-color: #8B4513;
+      color: #4a1a00;
+    }
+
+    /* Testimonials card — soft lavender */
+    #sec-testimonials .retro-box {
+      background: linear-gradient(160deg, #d8c8f0 0%, #c0a8e8 30%, #a888d8 70%, #9070c8 100%);
+      border: 6px solid #1a1a2e;
+      border-bottom-width: 8px;
+      box-shadow: 8px 8px 0 rgba(0, 0, 0, 0.5), inset 0 0 0 3px #2a2a3e;
+      color: #1a1a2e;
+    }
+
+    #sec-testimonials .retro-box h2 {
+      color: #1a1a2e;
+      text-shadow: 2px 2px 0 rgba(255, 255, 255, 0.4);
+    }
+
+    #sec-testimonials .retro-box::before {
+      content: '';
+      position: absolute;
+      top: 8px;
+      right: 12px;
+      width: 25%;
+      height: 35%;
+      background: linear-gradient(170deg, rgba(255, 255, 255, 0.45) 0%, rgba(255, 255, 255, 0.1) 40%, transparent 60%);
+      pointer-events: none;
+      z-index: 2;
+    }
+
+    #sec-testimonials .retro-box::after {
+      content: '';
+      position: absolute;
+      top: 15px;
+      right: 20px;
+      width: 10px;
+      height: 10px;
+      background: rgba(255, 255, 255, 0.6);
+      pointer-events: none;
+      z-index: 3;
+    }
+
+    #sec-testimonials .testimonial {
+      background: rgba(255, 255, 255, 0.2);
+      border-color: #5a3a8a;
+      border-left-color: #1a1a2e;
+    }
+
+    #sec-testimonials .testimonial p {
+      color: #2a1a3e;
+    }
+
+    #sec-testimonials .testimonial .author {
+      color: #3a1a5e;
+    }
+
+    /* Experience section */
+
+    .exp-card {
+      flex: 1.2;
+      min-width: 280px;
+      min-height: clamp(200px, 35vh, 300px);
+      background: linear-gradient(160deg, #f0ffe8 0%, #d8f0c8 40%, #c0e0a8 100%);
+      border-radius: 0;
+      border: 6px solid #1a1a2e;
+      padding: clamp(20px, 4vw, 36px);
+      box-shadow: 8px 8px 0 rgba(0, 0, 0, 0.5), inset 0 0 0 3px #2a2a3e;
+    }
+
+    .exp-stat {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .stat-num {
+      font-family: 'Press Start 2P', monospace;
+      font-size: clamp(14px, 3vw, 22px);
+      color: #2a9d6e;
+      font-weight: bold;
+    }
+
+    .stat-label {
+      font-family: 'Press Start 2P', monospace;
+      font-size: clamp(5px, 1vw, 7px);
+      color: #888;
+      margin-top: 2px;
+    }
+
+    .exp-tag {
+      font-family: 'Press Start 2P', monospace;
+      font-size: clamp(5px, 1vw, 8px);
+      padding: 6px 14px;
+      border: 3px solid #1a1a2e;
+      border-radius: 0;
+      color: #1a1a2e;
+      background: rgba(255, 255, 255, 0.5);
+      box-shadow: 3px 3px 0 rgba(0, 0, 0, 0.2);
+    }
+
+    .opp-card {
+      flex: 0.8;
+      min-width: 220px;
+      min-height: clamp(200px, 35vh, 300px);
+      background: linear-gradient(160deg, #e0d0f8 0%, #c8b0e8 40%, #a888d0 100%);
+      border: 6px solid #1a1a2e;
+      border-radius: 0;
+      padding: clamp(20px, 4vw, 36px);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 8px 8px 0 rgba(0, 0, 0, 0.5), inset 0 0 0 3px #2a2a3e;
+    }
+
+    .lets-talk-btn {
+      font-family: 'Press Start 2P', monospace;
+      font-size: clamp(7px, 1.5vw, 10px);
+      color: #1a1a2e;
+      text-decoration: none;
+      border: 4px solid #1a1a2e;
+      border-radius: 0;
+      padding: 10px 24px;
+      transition: background 0.2s;
+      pointer-events: auto;
+      background: rgba(255, 255, 255, 0.4);
+      box-shadow: 4px 4px 0 rgba(0, 0, 0, 0.3);
+    }
+
+    .lets-talk-btn:hover {
+      background: rgba(255, 255, 255, 0.6);
+    }
+
+    /* Contact card — mint green */
+    /* Contact bento grid */
+    .contact-bento {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: clamp(10px, 2vw, 18px);
+      max-width: 90vw;
+      width: 650px;
+      pointer-events: auto;
+    }
+
+    .contact-bento .bento-main {
+      grid-column: 1 / -1;
+      background: linear-gradient(160deg, #b8f5d0 0%, #88e8b0 30%, #60d890 70%, #48c878 100%);
+      border: 4px solid #1a1a2e;
+      border-bottom-width: 6px;
+      border-radius: 4px;
+      padding: clamp(20px, 4vw, 40px);
+      text-align: center;
+      box-shadow: 6px 6px 0 rgba(0, 0, 0, 0.4);
+      position: relative;
+      overflow: visible;
+    }
+
+    .contact-bento .bento-main h2 {
+      font-size: clamp(16px, 4vw, 28px);
+      color: #1a1a2e;
+      text-shadow: 2px 2px 0 rgba(255, 255, 255, 0.4);
+      margin-bottom: 12px;
+    }
+
+    .contact-bento .bento-main p {
+      font-family: 'Press Start 2P', monospace;
+      font-size: clamp(7px, 1.8vw, 12px);
+      color: #1a3a20;
+      line-height: 2;
+    }
+
+    .contact-bento .bento-card {
+      border: 3px solid #1a1a2e;
+      border-bottom-width: 5px;
+      border-radius: 4px;
+      padding: clamp(14px, 3vw, 28px);
+      text-align: center;
+      box-shadow: 5px 5px 0 rgba(0, 0, 0, 0.35);
+      transition: transform 0.15s;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: clamp(6px, 1.5vw, 12px);
+    }
+
+    .contact-bento .bento-card:hover {
+      transform: translateY(-3px);
+    }
+
+    .contact-bento .bento-card .bento-icon {
+      font-size: clamp(20px, 4vw, 36px);
+    }
+
+    .contact-bento .bento-card .bento-label {
+      font-family: 'Press Start 2P', monospace;
+      font-size: clamp(5px, 1vw, 8px);
+      letter-spacing: 1px;
+      opacity: 0.7;
+    }
+
+    .contact-bento .bento-card a {
+      font-family: 'Press Start 2P', monospace;
+      font-size: clamp(7px, 1.6vw, 12px);
+      text-decoration: none;
+      line-height: 1.8;
+      word-break: break-all;
+    }
+
+    .bento-email {
+      background: linear-gradient(160deg, #c8b8f5 0%, #a088e8 50%, #8868d8 100%);
+      color: #1a1a2e;
+    }
+
+    .bento-email a {
+      color: #1a1a2e;
+    }
+
+    .bento-phone {
+      background: linear-gradient(160deg, #FFE08A 0%, #FFD700 50%, #F0C000 100%);
+      color: #1a1a2e;
+    }
+
+    .bento-phone a {
+      color: #1a1a2e;
+    }
+
+    @media (max-width: 400px) {
+      .contact-bento {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .pixel-deco {
+      position: absolute;
+      top: -20px;
+      left: -15px;
+      right: -15px;
+      display: flex;
+      justify-content: space-between;
+      pointer-events: none;
+      z-index: 5;
+    }
+
+    .pixel-deco-bl {
+      position: absolute;
+      bottom: -20px;
+      left: -15px;
+      pointer-events: none;
+      z-index: 5;
+    }
+
+    .pixel-deco-br {
+      position: absolute;
+      bottom: -20px;
+      right: -15px;
+      pointer-events: none;
+      z-index: 5;
+    }
+
+    .px-icon {
+      width: 5px;
+      height: 5px;
+      display: inline-block;
+      transform: scale(var(--px-scale, 2));
+      transform-origin: center;
+      margin: 20px;
+    }
+
+    .px-star {
+      background: transparent;
+      box-shadow: 10px 0 0 #FFD700, 15px 0 0 #FFD700, 5px 5px 0 #FFD700, 10px 5px 0 #FFC000, 15px 5px 0 #FFC000, 20px 5px 0 #FFD700, 0 10px 0 #FFD700, 5px 10px 0 #FFC000, 10px 10px 0 #FFB000, 15px 10px 0 #FFB000, 20px 10px 0 #FFC000, 25px 10px 0 #FFD700, 5px 15px 0 #FFD700, 10px 15px 0 #FFC000, 15px 15px 0 #FFC000, 20px 15px 0 #FFD700, 0 20px 0 #FFD700, 5px 20px 0 #FFC000, 10px 20px 0 #FFB000, 15px 20px 0 #FFB000, 20px 20px 0 #FFC000, 25px 20px 0 #FFD700, 0 25px 0 #E8A000, 5px 25px 0 #E8A000, 20px 25px 0 #E8A000, 25px 25px 0 #E8A000;
+    }
+
+    .px-heart {
+      background: transparent;
+      box-shadow: 5px 0 0 #FF3366, 10px 0 0 #FF3366, 20px 0 0 #FF3366, 25px 0 0 #FF3366, 0 5px 0 #FF3366, 5px 5px 0 #FF6688, 10px 5px 0 #FF3366, 15px 5px 0 #FF3366, 20px 5px 0 #FF6688, 25px 5px 0 #FF3366, 30px 5px 0 #FF3366, 0 10px 0 #FF3366, 5px 10px 0 #FF3366, 10px 10px 0 #FF3366, 15px 10px 0 #FF3366, 20px 10px 0 #FF3366, 25px 10px 0 #FF3366, 30px 10px 0 #FF3366, 5px 15px 0 #DD2244, 10px 15px 0 #DD2244, 15px 15px 0 #DD2244, 20px 15px 0 #DD2244, 25px 15px 0 #DD2244, 10px 20px 0 #CC1133, 15px 20px 0 #CC1133, 20px 20px 0 #CC1133, 15px 25px 0 #AA0022;
+    }
+
+    .px-bolt {
+      background: transparent;
+      box-shadow: 15px 0 0 #FFE44D, 20px 0 0 #FFE44D, 25px 0 0 #FFD700, 30px 0 0 #FFD700, 10px 5px 0 #FFE44D, 15px 5px 0 #FFD700, 20px 5px 0 #FFD700, 25px 5px 0 #FFC000, 10px 10px 0 #FFD700, 15px 10px 0 #FFD700, 20px 10px 0 #FFC000, 5px 15px 0 #FFD700, 10px 15px 0 #FFD700, 15px 15px 0 #FFC000, 20px 15px 0 #FFC000, 25px 15px 0 #FFB800, 5px 20px 0 #FFD700, 10px 20px 0 #FFC000, 15px 20px 0 #FFC000, 20px 20px 0 #FFB800, 10px 25px 0 #FFC000, 15px 25px 0 #FFB800, 20px 25px 0 #FFB800, 5px 30px 0 #FFB800, 10px 30px 0 #FFB800, 15px 30px 0 #FFA500, 5px 35px 0 #FFA500, 10px 35px 0 #FFA500, 0 40px 0 #FFA500, 5px 40px 0 #E89000, 0 45px 0 #E89000;
+    }
+
+    .px-pencil {
+      background: transparent;
+      box-shadow: 20px 0 0 #FFD700, 15px 5px 0 #FFD700, 20px 5px 0 #FFA500, 10px 10px 0 #FFD700, 15px 10px 0 #FFA500, 5px 15px 0 #FF8C00, 10px 15px 0 #C06830, 0 20px 0 #FF6347, 5px 20px 0 #C06830, 0 25px 0 #333;
+    }
+
+    .px-bubble {
+      background: transparent;
+      box-shadow: 5px 0 0 #fff, 10px 0 0 #fff, 15px 0 0 #fff, 20px 0 0 #fff, 0 5px 0 #fff, 5px 5px 0 #eee, 10px 5px 0 #eee, 15px 5px 0 #eee, 20px 5px 0 #eee, 25px 5px 0 #fff, 0 10px 0 #fff, 5px 10px 0 #eee, 10px 10px 0 #ddd, 15px 10px 0 #eee, 20px 10px 0 #eee, 25px 10px 0 #fff, 5px 15px 0 #fff, 10px 15px 0 #fff, 15px 15px 0 #fff, 20px 15px 0 #fff, 5px 20px 0 #ddd, 10px 20px 0 #ddd, 0 25px 0 #ccc;
+    }
+
+    .px-mail {
+      background: transparent;
+      box-shadow:
+        /* Nose tip */
+        15px 0 0 #E83030,
+        /* Nose wider */
+        10px 5px 0 #FF4040, 15px 5px 0 #E83030, 20px 5px 0 #FF4040,
+        /* Body top */
+        10px 10px 0 #eee, 15px 10px 0 #fff, 20px 10px 0 #ddd,
+        /* Body + window */
+        10px 15px 0 #eee, 15px 15px 0 #66CCFF, 20px 15px 0 #ddd,
+        10px 20px 0 #eee, 15px 20px 0 #4AAADD, 20px 20px 0 #ddd,
+        /* Body lower */
+        10px 25px 0 #eee, 15px 25px 0 #fff, 20px 25px 0 #ddd,
+        10px 30px 0 #ddd, 15px 30px 0 #eee, 20px 30px 0 #ccc,
+        /* Fins + body */
+        5px 35px 0 #E83030, 10px 35px 0 #ddd, 15px 35px 0 #eee, 20px 35px 0 #ccc, 25px 35px 0 #E83030,
+        0 40px 0 #CC2020, 5px 40px 0 #E83030, 10px 40px 0 #ccc, 15px 40px 0 #ddd, 20px 40px 0 #bbb, 25px 40px 0 #E83030, 30px 40px 0 #CC2020,
+        /* Fire */
+        10px 45px 0 #FF8800, 15px 45px 0 #FFAA00, 20px 45px 0 #FF8800,
+        5px 45px 0 #FF6600, 25px 45px 0 #FF6600,
+        /* Fire tip */
+        10px 50px 0 #FFD700, 15px 50px 0 #FFEE44, 20px 50px 0 #FFD700,
+        15px 55px 0 #FFD700;
+    }
+
+    .px-console {
+      background: transparent;
+      box-shadow: 5px 0 0 #E83030, 10px 0 0 #E83030, 15px 0 0 #E83030, 20px 0 0 #E83030, 25px 0 0 #E83030, 30px 0 0 #E83030, 0 5px 0 #E83030, 5px 5px 0 #FF4040, 10px 5px 0 #FF4040, 15px 5px 0 #FF4040, 20px 5px 0 #FF4040, 25px 5px 0 #FF4040, 30px 5px 0 #FF4040, 35px 5px 0 #E83030, 0 10px 0 #E83030, 5px 10px 0 #FF4040, 10px 10px 0 #222, 15px 10px 0 #222, 20px 10px 0 #222, 25px 10px 0 #222, 30px 10px 0 #FF4040, 35px 10px 0 #E83030, 0 15px 0 #E83030, 5px 15px 0 #FF4040, 10px 15px 0 #222, 15px 15px 0 #66CCFF, 20px 15px 0 #66CCFF, 25px 15px 0 #222, 30px 15px 0 #FF4040, 35px 15px 0 #E83030, 0 20px 0 #E83030, 5px 20px 0 #FF4040, 10px 20px 0 #222, 15px 20px 0 #66CCFF, 20px 20px 0 #88DDFF, 25px 20px 0 #222, 30px 20px 0 #FF4040, 35px 20px 0 #E83030, 0 25px 0 #E83030, 5px 25px 0 #FF4040, 10px 25px 0 #222, 15px 25px 0 #66CCFF, 20px 25px 0 #66CCFF, 25px 25px 0 #222, 30px 25px 0 #FF4040, 35px 25px 0 #E83030, 0 30px 0 #E83030, 5px 30px 0 #FF4040, 10px 30px 0 #222, 15px 30px 0 #222, 20px 30px 0 #222, 25px 30px 0 #222, 30px 30px 0 #FF4040, 35px 30px 0 #E83030, 0 35px 0 #E83030, 5px 35px 0 #FF4040, 10px 35px 0 #FF4040, 15px 35px 0 #FF4040, 20px 35px 0 #FF4040, 25px 35px 0 #FF4040, 30px 35px 0 #FF4040, 35px 35px 0 #E83030, 0 40px 0 #E83030, 5px 40px 0 #FF4040, 10px 40px 0 #333, 15px 40px 0 #FF4040, 20px 40px 0 #FF4040, 25px 40px 0 #333, 30px 40px 0 #333, 35px 40px 0 #E83030, 0 45px 0 #E83030, 5px 45px 0 #333, 10px 45px 0 #333, 15px 45px 0 #333, 20px 45px 0 #FF4040, 25px 45px 0 #FF4040, 30px 45px 0 #FF4040, 35px 45px 0 #E83030, 0 50px 0 #E83030, 5px 50px 0 #FF4040, 10px 50px 0 #333, 15px 50px 0 #FF4040, 20px 50px 0 #FF4040, 25px 50px 0 #FF4040, 30px 50px 0 #FF4040, 35px 50px 0 #E83030, 5px 55px 0 #E83030, 10px 55px 0 #E83030, 15px 55px 0 #E83030, 20px 55px 0 #E83030, 25px 55px 0 #E83030, 30px 55px 0 #E83030;
+    }
+
+    .px-duck {
+      background: transparent;
+      box-shadow: 15px 0 0 #F0E040, 20px 0 0 #F0E040, 25px 0 0 #F0E040, 10px 5px 0 #F0E040, 15px 5px 0 #FFE84D, 20px 5px 0 #FFE84D, 25px 5px 0 #FFE84D, 30px 5px 0 #F0E040, 0 10px 0 #F07020, 5px 10px 0 #FF8030, 10px 10px 0 #F0E040, 15px 10px 0 #FFE84D, 20px 10px 0 #222, 25px 10px 0 #FFE84D, 30px 10px 0 #F0E040, 0 15px 0 #F07020, 5px 15px 0 #FF8030, 10px 15px 0 #F0E040, 15px 15px 0 #FFE84D, 20px 15px 0 #FFE84D, 25px 15px 0 #FFE84D, 30px 15px 0 #F0E040, 10px 20px 0 #F0E040, 15px 20px 0 #F0E040, 20px 20px 0 #F0E040, 25px 20px 0 #F0E040, 30px 20px 0 #F0E040, 35px 20px 0 #F0E040, 5px 25px 0 #F0D830, 10px 25px 0 #FFE84D, 15px 25px 0 #FFE84D, 20px 25px 0 #FFE84D, 25px 25px 0 #FFE84D, 30px 25px 0 #FFE84D, 35px 25px 0 #F0D830, 5px 30px 0 #F0D830, 10px 30px 0 #FFE84D, 15px 30px 0 #FFE84D, 20px 30px 0 #FFE84D, 25px 30px 0 #FFE84D, 30px 30px 0 #FFE84D, 35px 30px 0 #F0D830, 5px 35px 0 #F0D830, 10px 35px 0 #F0D830, 15px 35px 0 #FFE84D, 20px 35px 0 #FFE84D, 25px 35px 0 #FFE84D, 30px 35px 0 #F0D830, 35px 35px 0 #F0D830, 0 40px 0 #E8D020, 5px 40px 0 #F0D830, 10px 40px 0 #F0D830, 15px 40px 0 #F0D830, 20px 40px 0 #F0D830, 25px 40px 0 #F0D830, 30px 40px 0 #F0D830, 10px 45px 0 #E8D020, 15px 45px 0 #E8D020, 20px 45px 0 #E8D020, 25px 45px 0 #E8D020, 30px 45px 0 #E8D020;
+    }
+
+    .px-trophy {
+      background: transparent;
+      box-shadow: 0 5px 0 #8B5E2B, 5px 5px 0 #C8922A, 0 10px 0 #8B5E2B, 5px 10px 0 #C8922A, 0 15px 0 #8B5E2B, 5px 15px 0 #8B5E2B, 10px 0 0 #8B5E2B, 15px 0 0 #FFD700, 20px 0 0 #FFD700, 25px 0 0 #FFD700, 30px 0 0 #FFD700, 35px 0 0 #8B5E2B, 10px 5px 0 #8B5E2B, 15px 5px 0 #FFE44D, 20px 5px 0 #FFD700, 25px 5px 0 #FFD700, 30px 5px 0 #FFE44D, 35px 5px 0 #8B5E2B, 10px 10px 0 #8B5E2B, 15px 10px 0 #FFE44D, 20px 10px 0 #C8922A, 25px 10px 0 #FFD700, 30px 10px 0 #FFF, 35px 10px 0 #8B5E2B, 10px 15px 0 #8B5E2B, 15px 15px 0 #FFE44D, 20px 15px 0 #C8922A, 25px 15px 0 #FFD700, 30px 15px 0 #FFE44D, 35px 15px 0 #8B5E2B, 15px 20px 0 #8B5E2B, 20px 20px 0 #FFD700, 25px 20px 0 #FFD700, 30px 20px 0 #8B5E2B, 40px 5px 0 #C8922A, 45px 5px 0 #8B5E2B, 40px 10px 0 #C8922A, 45px 10px 0 #8B5E2B, 40px 15px 0 #8B5E2B, 45px 15px 0 #8B5E2B, 20px 25px 0 #8B5E2B, 25px 25px 0 #FFD700, 20px 30px 0 #8B5E2B, 25px 30px 0 #C8922A, 20px 35px 0 #C8922A, 25px 35px 0 #FFD700, 15px 40px 0 #FFD700, 20px 40px 0 #FFD700, 25px 40px 0 #FFD700, 30px 40px 0 #FFD700, 10px 45px 0 #8B5E2B, 15px 45px 0 #8B5E2B, 20px 45px 0 #8B5E2B, 25px 45px 0 #8B5E2B, 30px 45px 0 #8B5E2B, 35px 45px 0 #8B5E2B, 10px 50px 0 #6B3E1C, 15px 50px 0 #C8922A, 20px 50px 0 #FFD700, 25px 50px 0 #FFD700, 30px 50px 0 #C8922A, 35px 50px 0 #6B3E1C, 10px 55px 0 #6B3E1C, 15px 55px 0 #6B3E1C, 20px 55px 0 #6B3E1C, 25px 55px 0 #6B3E1C, 30px 55px 0 #6B3E1C, 35px 55px 0 #6B3E1C;
+    }
+
+    /* Pixel art project icons */
+    .px-robot {
+      background: transparent;
+      box-shadow:
+        10px 0 0 #888, 15px 0 0 #888, 20px 0 0 #888, 25px 0 0 #888,
+        5px 5px 0 #999, 10px 5px 0 #bbb, 15px 5px 0 #bbb, 20px 5px 0 #bbb, 25px 5px 0 #bbb, 30px 5px 0 #999,
+        5px 10px 0 #999, 10px 10px 0 #00E5FF, 15px 10px 0 #bbb, 20px 10px 0 #bbb, 25px 10px 0 #00E5FF, 30px 10px 0 #999,
+        5px 15px 0 #999, 10px 15px 0 #bbb, 15px 15px 0 #bbb, 20px 15px 0 #bbb, 25px 15px 0 #bbb, 30px 15px 0 #999,
+        10px 20px 0 #888, 15px 20px 0 #FF4060, 20px 20px 0 #FF4060, 25px 20px 0 #888,
+        0 25px 0 #666, 5px 25px 0 #999, 10px 25px 0 #bbb, 15px 25px 0 #bbb, 20px 25px 0 #bbb, 25px 25px 0 #bbb, 30px 25px 0 #999, 35px 25px 0 #666,
+        0 30px 0 #666, 5px 30px 0 #999, 10px 30px 0 #bbb, 15px 30px 0 #FFD700, 20px 30px 0 #FFD700, 25px 30px 0 #bbb, 30px 30px 0 #999, 35px 30px 0 #666,
+        0 35px 0 #666, 10px 35px 0 #999, 15px 35px 0 #bbb, 20px 35px 0 #bbb, 25px 35px 0 #999, 35px 35px 0 #666,
+        10px 40px 0 #888, 15px 40px 0 #888, 20px 40px 0 #888, 25px 40px 0 #888,
+        10px 45px 0 #666, 15px 45px 0 #666, 20px 45px 0 #666, 25px 45px 0 #666;
+    }
+
+    .px-runner {
+      background: transparent;
+      box-shadow:
+        15px 0 0 #FFD4A0, 20px 0 0 #FFD4A0,
+        15px 5px 0 #FFD4A0, 20px 5px 0 #FFD4A0,
+        10px 10px 0 #1a1a2e, 15px 10px 0 #1a1a2e, 20px 10px 0 #1a1a2e, 25px 10px 0 #1a1a2e,
+        10px 15px 0 #4488FF, 15px 15px 0 #4488FF, 20px 15px 0 #4488FF, 25px 15px 0 #FFD4A0,
+        5px 20px 0 #FFD4A0, 10px 20px 0 #4488FF, 15px 20px 0 #4488FF, 20px 20px 0 #4488FF,
+        10px 25px 0 #4488FF, 15px 25px 0 #4488FF, 20px 25px 0 #4488FF,
+        10px 30px 0 #333, 15px 30px 0 #333, 20px 30px 0 #333,
+        5px 35px 0 #333, 10px 35px 0 #333, 20px 35px 0 #333, 25px 35px 0 #333,
+        0 40px 0 #333, 5px 40px 0 #333, 25px 40px 0 #333, 30px 40px 0 #333,
+        0 45px 0 #E83030, 5px 45px 0 #E83030, 25px 45px 0 #E83030, 30px 45px 0 #E83030;
+    }
+
+    .px-palette {
+      background: transparent;
+      box-shadow:
+        10px 0 0 #eee, 15px 0 0 #eee, 20px 0 0 #eee, 25px 0 0 #eee,
+        5px 5px 0 #eee, 10px 5px 0 #fff, 15px 5px 0 #FF4060, 20px 5px 0 #fff, 25px 5px 0 #fff, 30px 5px 0 #eee,
+        5px 10px 0 #eee, 10px 10px 0 #fff, 15px 10px 0 #fff, 20px 10px 0 #fff, 25px 10px 0 #FFD700, 30px 10px 0 #eee,
+        5px 15px 0 #eee, 10px 15px 0 #fff, 15px 15px 0 #4488FF, 20px 15px 0 #fff, 25px 15px 0 #fff, 30px 15px 0 #ddd,
+        5px 20px 0 #ddd, 10px 20px 0 #fff, 15px 20px 0 #fff, 20px 20px 0 #fff, 25px 20px 0 #fff, 30px 20px 0 #ddd,
+        5px 25px 0 #ddd, 10px 25px 0 #fff, 15px 25px 0 #00CC66, 20px 25px 0 #fff, 25px 25px 0 #fff, 30px 25px 0 #ddd,
+        10px 30px 0 #ddd, 15px 30px 0 #ddd, 20px 30px 0 #ddd, 25px 30px 0 #ddd,
+        15px 35px 0 #8B5E2B, 20px 35px 0 #8B5E2B,
+        15px 40px 0 #6B3E1C, 20px 40px 0 #6B3E1C;
+    }
+
+    .px-card-icon {
+      display: inline-block;
+      width: 5px;
+      height: 5px;
+    }
+
+    /* Skills grid */
+    .skills-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 14px;
+      margin-top: 10px;
+    }
+
+    @media (max-width: 500px) {
+      .skills-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+
+    @media (min-width: 700px) {
+      .skills-grid {
+        grid-template-columns: repeat(5, 1fr);
+      }
+    }
+
+    .skill-badge {
+      background: rgba(30, 25, 40, 0.9);
+      border: 4px solid #1a1a2e;
+      padding: clamp(16px, 3vw, 28px) clamp(10px, 2vw, 16px);
+      text-align: center;
+      font-size: clamp(7px, 1.6vw, 11px);
+      color: #FFD700;
+      box-shadow: 6px 6px 0 rgba(0, 0, 0, 0.5), inset 0 0 0 2px #2a2a3e;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .skill-badge img {
+      width: clamp(32px, 8vw, 56px);
+      height: clamp(32px, 8vw, 56px);
+      object-fit: contain;
+      image-rendering: auto;
+    }
+
+    /* Projects horizontal space wrapper */
+    .projects-scroll {
+      display: flex;
+      gap: clamp(14px, 3vw, 24px);
+      overflow: visible;
+      padding: 10px 0 16px;
+      width: max-content;
+      pointer-events: auto;
+    }
+
+
+
+    .projects-scroll::-webkit-scrollbar {
+      height: 0;
+      display: none;
+    }
+
+    .projects-scroll {
+      scrollbar-width: none;
+    }
+
+    .project-card {
+      flex: 0 0 clamp(300px, 65vw, 420px);
+      scroll-snap-align: center;
+      border: 5px solid #1a1a2e;
+      border-bottom-width: 7px;
+      border-radius: 0;
+      overflow: hidden;
+      box-shadow: 7px 7px 0 rgba(0, 0, 0, 0.45);
+      transition: transform 0.15s;
+      position: relative;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .project-card:hover {
+      transform: translateY(-4px);
+    }
+
+    .project-card .card-img {
+      width: 100%;
+      height: clamp(130px, 32vw, 200px);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .project-card .card-img::after {
+      content: '';
+      position: absolute;
+      top: 6px;
+      right: 8px;
+      width: 30%;
+      height: 40%;
+      background: linear-gradient(170deg, rgba(255, 255, 255, 0.35) 0%, transparent 60%);
+      pointer-events: none;
+    }
+
+    .project-card .card-img .card-icon {
+      font-size: clamp(44px, 11vw, 68px);
+      filter: drop-shadow(3px 3px 0 rgba(0, 0, 0, 0.3));
+    }
+
+    .project-card .card-body {
+      padding: clamp(14px, 3vw, 24px);
+      background: #1a1a2e;
+      flex: 1;
+    }
+
+    .project-card .card-tag {
+      display: inline-block;
+      background: #FFD700;
+      color: #1a1a2e;
+      font-size: clamp(6px, 1.5vw, 9px);
+      font-weight: bold;
+      padding: 4px 10px;
+      margin-bottom: 12px;
+      letter-spacing: 1px;
+    }
+
+    .project-card h3 {
+      font-size: clamp(13px, 3.2vw, 20px);
+      color: #fff;
+      margin-bottom: 12px;
+      line-height: 1.6;
+      text-shadow: 2px 2px 0 rgba(0, 0, 0, 0.6);
+    }
+
+    .project-card p {
+      font-size: clamp(7px, 1.8vw, 11px);
+      color: rgba(255, 255, 255, 0.7);
+      line-height: 2.4;
+    }
+
+    /* Individual card colors */
+    .project-card:nth-child(1) .card-img {
+      background: url('assets/images/Banner03.png') center/cover no-repeat;
+    }
+
+    .project-card:nth-child(2) .card-img {
+      background: url('assets/images/Banner04.png') center/cover no-repeat;
+    }
+
+    .project-card:nth-child(3) .card-img {
+      background: url('assets/images/DecideAIBanner.webp') center/cover no-repeat;
+    }
+
+    .project-card:nth-child(4) .card-img {
+      background: url('assets/images/Banner02.jpg') center/cover no-repeat;
+    }
+
+    .project-card:nth-child(5) .card-img {
+      background: rgba(255, 255, 255, 0.1);
+    }
+
+    /* Testimonials */
+    .testimonial {
+      background: rgba(20, 12, 8, 0.85);
+      border: 2px solid #8080c0;
+      border-left: 5px solid #FFD700;
+      padding: clamp(16px, 3vw, 24px);
+      margin-bottom: 16px;
+      width: 100%;
+      box-shadow: 3px 3px 0 rgba(0, 0, 0, 0.4);
+    }
+
+    .testimonial p {
+      font-size: clamp(10px, 2vw, 14px);
+      color: #ddd;
+      line-height: 2.2;
+      font-style: italic;
+    }
+
+    .testimonial .author {
+      font-size: clamp(9px, 1.8vw, 13px);
+      color: #FFD700;
+      margin-top: 12px;
+      font-style: normal;
+    }
+
+    /* Contact */
+    .contact-link {
+      display: block;
+      color: #FFD700;
+      text-decoration: none;
+      font-size: clamp(12px, 2.8vw, 18px);
+      margin: 12px 0;
+      text-shadow: 2px 2px 0 #000;
+    }
+
+    .contact-link:hover {
+      color: #fff;
+    }
+
+    /* Nav menu */
+    #nav-menu {
+      display: flex;
+      gap: 6px;
+      pointer-events: auto;
+    }
+
+    .nav-menu-btn {
+      font-family: 'Press Start 2P', monospace;
+      font-size: clamp(6px, 1.2vw, 10px);
+      padding: 6px 12px;
+      background: #fff;
+      color: #1a1a2e;
+      border: 3px solid #1a1a2e;
+      border-bottom-width: 4px;
+      cursor: pointer;
+      transition: all 0.15s;
+      box-shadow: 2px 2px 0 rgba(0, 0, 0, 0.3);
+    }
+
+    .nav-menu-btn:hover {
+      background: #FFD700;
+      transform: translateY(-1px);
+    }
+
+    .nav-menu-btn.active {
+      background: #FFD700;
+      color: #1a1a2e;
+    }
+
+    /* Nav dots */
+    #nav-bar {
+      position: fixed;
+      top: 12px;
+      left: 0;
+      right: 0;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0 16px;
+      z-index: 20;
+      pointer-events: none;
+    }
+
+    #nav-label {
+      font-family: 'Press Start 2P', monospace;
+      font-size: clamp(7px, 1.8vw, 12px);
+      color: #FFD700;
+      text-shadow: 2px 2px 0 #000;
+      pointer-events: auto;
+      line-height: 1.6;
+      order: -1;
+    }
+
+    #nav-menu {
+      order: 0;
+      position: absolute;
+      left: 50%;
+      transform: translateX(-50%);
+    }
+
+    #nav-label span {
+      display: block;
+      font-size: clamp(5px, 1.2vw, 8px);
+      color: rgba(255, 255, 255, 0.7);
+      text-shadow: 1px 1px 0 #000;
+    }
+
+    #nav-dots {
+      display: flex;
+      gap: 8px;
+      pointer-events: auto;
+    }
+
+    .nav-dot {
+      width: 16px;
+      height: 14px;
+      background: none;
+      border: none;
+      cursor: pointer;
+      position: relative;
+      transition: transform 0.2s;
+    }
+
+    .nav-dot::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 16px;
+      height: 14px;
+      background: rgba(255, 255, 255, 0.3);
+      clip-path: path('M8 13 L1.5 6.5 C-0.5 4.5 -0.5 1.5 1.5 0.5 C3.5 -0.5 5.5 0.5 8 3 C10.5 0.5 12.5 -0.5 14.5 0.5 C16.5 1.5 16.5 4.5 14.5 6.5 Z');
+      transition: background 0.2s;
+    }
+
+    .nav-dot.active::before {
+      background: #FF4060;
+    }
+
+    .nav-dot.active {
+      transform: scale(1.2);
+    }
+
+    /* Mobile popup */
+    #mobile-popup-overlay {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0, 0, 0, 0.85);
+      z-index: 9999;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+
+    #mobile-popup {
+      background: #1a1a2e;
+      border: 4px solid #FFD700;
+      border-bottom-width: 6px;
+      box-shadow: 8px 8px 0 rgba(0, 0, 0, 0.5);
+      padding: 32px 24px;
+      max-width: 340px;
+      width: 100%;
+      text-align: center;
+    }
+
+    #mobile-popup .popup-icon {
+      font-size: 36px;
+      margin-bottom: 16px;
+      display: block;
+    }
+
+    #mobile-popup h3 {
+      font-family: 'Press Start 2P', monospace;
+      font-size: 12px;
+      color: #FFD700;
+      margin-bottom: 14px;
+      line-height: 1.8;
+    }
+
+    #mobile-popup p {
+      font-family: 'Press Start 2P', monospace;
+      font-size: 7px;
+      color: rgba(255, 255, 255, 0.7);
+      line-height: 2;
+      margin-bottom: 20px;
+    }
+
+    #mobile-popup-btn {
+      font-family: 'Press Start 2P', monospace;
+      font-size: 8px;
+      padding: 10px 20px;
+      background: #FFD700;
+      color: #1a1a2e;
+      border: 3px solid #1a1a2e;
+      border-bottom-width: 5px;
+      cursor: pointer;
+      box-shadow: 3px 3px 0 rgba(0, 0, 0, 0.3);
+      transition: transform 0.1s;
+    }
+
+    #mobile-popup-btn:active {
+      transform: translateY(2px);
+      box-shadow: 1px 1px 0 rgba(0, 0, 0, 0.3);
+    }
+
+    @media (max-width: 768px) {
+      #mobile-popup-overlay {
+        display: flex;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- Mobile popup -->
+  <div id="mobile-popup-overlay">
+    <div id="mobile-popup">
+      <span class="popup-icon">🖥️</span>
+      <h3>BEST ON DESKTOP</h3>
+      <p>This site is an interactive experience built for larger screens. You can still explore on mobile, but for the
+        full adventure — grab a laptop.</p>
+      <button id="mobile-popup-btn">GOT IT, LET ME IN</button>
+    </div>
+  </div>
+
+  <canvas id="c"></canvas>
+
+  <div id="overlay">
+    <!-- Hero -->
+    <div class="section" id="sec-hero">
+      <div class="hero-line">Designing Experiences<br><span class="mint">That Matter</span></div>
+      <div class="hero-bio">Product Designer at UITOUX, crafting digital experiences that make people's lives easier and
+        help businesses grow. Driven by visual craft and meaningful impact.</div>
+      <div class="scroll-hint">◄ SCROLL TO EXPLORE ►</div>
+    </div>
+
+    <!-- About -->
+    <div class="section" id="sec-about">
+      <div class="retro-box">
+        <div class="pixel-deco">
+          <span style="display: flex; flex-direction: column; align-items: flex-start; gap: 6px;">
+            <span class="px-icon px-duck" style="transform: scale(1.2) rotate(-15deg);"></span>
+            <span class="px-icon px-console"
+              style="transform: scale(1.2) rotate(-10deg); margin-left: -12px; margin-top: 4px;"></span>
+          </span>
+          <span class="px-icon px-star" style="transform: scale(2);"></span>
+          <span class="px-icon px-trophy" style="transform: scale(2) rotate(12deg);"></span>
+        </div>
+        <h2>ABOUT ME</h2>
+        <p>I design products people actually enjoy using. Currently at UITOUX, turning complex problems into simple,
+          delightful experiences. Fueled by chai and an unreasonable number of Figma tabs.</p>
+        <div class="pixel-deco-br">
+          <span class="px-icon px-heart" style="transform: scale(2) rotate(10deg);"></span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Skills -->
+    <div class="section" id="sec-skills">
+      <h2
+        style="font-family:'Press Start 2P',monospace; font-size:clamp(16px,4vw,28px); color:#FFD700; text-shadow:3px 3px 0 #000; text-align:center; position:absolute; top:clamp(90px,16vh,140px);">
+        MY TOOLKIT</h2>
+      <p
+        style="font-family:'Press Start 2P',monospace; font-size:clamp(8px,1.8vw,12px); color:#fff; text-shadow:2px 2px 0 #000; text-align:center; position:absolute; top:clamp(130px,22vh,190px); max-width:600px; width:90%; line-height:1.8;">
+        AI lets me skip the busywork — I focus on defining the right problem, and let intelligent tools handle the heavy
+        lifting from concept to polished design.</p>
+    </div>
+
+    <!-- Experience -->
+    <div class="section" id="sec-experience">
+      <h2
+        style="font-family:'Press Start 2P',monospace; font-size:clamp(14px,4vw,26px); color:#FFD700; text-shadow:3px 3px 0 #000; margin-bottom:6px; text-align:center;">
+        EXPERIENCE</h2>
+      <p
+        style="font-family:'Press Start 2P',monospace; font-size:clamp(6px,1.3vw,9px); color:rgba(255,255,255,0.7); text-shadow:1px 1px 0 #000; text-align:center; margin-bottom:32px; line-height:1.8;">
+        WHERE I'VE BEEN LEVELING UP MY DESIGN SKILLS</p>
+      <div
+        style="display:flex; gap:20px; flex-wrap:wrap; justify-content:center; align-items:flex-start; max-width:900px; width:90%;">
+        <!-- Experience Card -->
+        <div class="exp-card">
+          <div style="display:flex; justify-content:space-between; align-items:baseline; flex-wrap:wrap; gap:8px;">
+            <h3
+              style="font-family:Georgia,'Times New Roman',serif; font-style:italic; font-size:clamp(18px,4vw,28px); color:#1a1a2e; margin:0;">
+              Senior Designer</h3>
+            <span style="font-family:'Press Start 2P',monospace; font-size:clamp(7px,1.5vw,10px); color:#666;">2021 —
+              Present</span>
+          </div>
+          <p
+            style="font-family:'Press Start 2P',monospace; font-size:clamp(7px,1.5vw,10px); color:#2a9d6e; margin:6px 0 14px;">
+            UITOUX Solutions Private Limited</p>
+          <p
+            style="font-family:'Press Start 2P',monospace; font-size:clamp(6px,1.2vw,9px); color:#444; line-height:1.8; margin:0 0 16px;">
+            Designing end-to-end product experiences across fintech, travel, and CRM platforms. Leading UX strategy and
+            building scalable design systems.</p>
+          <div style="display:flex; gap:clamp(16px,4vw,32px); margin-bottom:14px;">
+            <div class="exp-stat"><span class="stat-num">5+</span><span class="stat-label">YEARS</span></div>
+            <div class="exp-stat"><span class="stat-num">30+</span><span class="stat-label">PRODUCTS</span></div>
+            <div class="exp-stat"><span class="stat-num">15+</span><span class="stat-label">CLIENTS</span></div>
+          </div>
+          <div style="display:flex; flex-wrap:wrap; gap:8px;">
+            <span class="exp-tag">Fintech</span>
+            <span class="exp-tag">Travel Apps</span>
+            <span class="exp-tag">CRM</span>
+            <span class="exp-tag">Product Design</span>
+            <span class="exp-tag">E-commerce</span>
+            <span class="exp-tag">Healthcare</span>
+            <span class="exp-tag">B2B Products</span>
+          </div>
+        </div>
+        <!-- Open to Opportunities Card -->
+        <div class="opp-card">
+          <div
+            style="width:12px; height:12px; background:#2a9d6e; border:3px solid #1a1a2e; border-radius:0; margin:0 auto 12px;">
+          </div>
+          <h3
+            style="font-family:'Press Start 2P',monospace; font-size:clamp(9px,2vw,14px); color:#1a1a2e; text-shadow:2px 2px 0 rgba(255,255,255,0.4); text-align:center; margin:0 0 10px;">
+            Open to Opportunities</h3>
+          <p
+            style="font-family:'Press Start 2P',monospace; font-size:clamp(6px,1.2vw,9px); color:#2a1a3e; text-align:center; line-height:1.8; margin:0 0 16px;">
+            Currently exploring senior product design roles where I can lead design systems, shape UX strategy, and
+            build meaningful products.</p>
+          <a href="#" class="lets-talk-btn">Let's Talk ↗</a>
+        </div>
+      </div>
+    </div>
+
+    <!-- Case Studies -->
+    <div class="section" id="sec-projects">
+      <h2
+        style="font-size: clamp(14px, 4vw, 26px); color: #FFD700; text-shadow: 3px 3px 0 #000; margin-bottom: 16px; text-align: center;">
+        CASE STUDIES</h2>
+      <div class="projects-scroll">
+        <a class="project-card" href="https://www.behance.net/gallery/247316485/Expense-Management-System"
+          target="_blank" style="text-decoration: none; color: inherit; cursor: pointer;">
+          <div class="card-img" style="background: url('assets/images/Banner03.png') center/cover no-repeat;"></div>
+          <div class="card-body">
+            <span class="card-tag">PRODUCT / FINTECH</span>
+            <h3>DIGITAL EXPENSE MANAGEMENT</h3>
+            <p>A modern platform for streamlining corporate spending and tracking.</p>
+          </div>
+        </a>
+        <a class="project-card" href="https://www.behance.net/gallery/106165741/On-the-Road-Beyond-Expectation"
+          target="_blank" style="text-decoration: none; color: inherit; cursor: pointer;">
+          <div class="card-img" style="background: url('assets/images/Banner04.png') center/cover no-repeat;"></div>
+          <div class="card-body">
+            <span class="card-tag">CRM</span>
+            <h3>ROAD SIDE ASSISTANCE</h3>
+            <p>A CRM concept designed to optimize and manage roadside assistance operations directly on the go.</p>
+          </div>
+        </a>
+        <a class="project-card" href="https://www.behance.net/gallery/246850857/DecideAI-Personal-AI-Decision-Assistant"
+          target="_blank" style="text-decoration: none; color: inherit; cursor: pointer;">
+          <div class="card-img" style="background: url('assets/images/DecideAIBanner.webp') center/cover no-repeat;">
+          </div>
+          <div class="card-body">
+            <span class="card-tag">CONCEPT</span>
+            <h3>DECEIDE.AI</h3>
+            <p>A conceptual case study demonstrating the comprehensive product design process for an intelligent
+              decision-support
+              application.</p>
+          </div>
+        </a>
+        <a class="project-card"
+          href="https://www.behance.net/gallery/94504551/Failure-Anxiety-problem-in-Google-Pay-What-If" target="_blank"
+          style="text-decoration: none; color: inherit; cursor: pointer;">
+          <div class="card-img" style="background: url('assets/images/Banner02.jpg') center/cover no-repeat;"></div>
+          <div class="card-body">
+            <span class="card-tag">CONCEPT</span>
+            <h3>FAILURE ANXIETY IN GOOGLE PAY</h3>
+            <p>A concept exploring the anxiety users feel when UPI transactions fail and how Google Pay could better
+              handle those moments.</p>
+          </div>
+        </a>
+        <a class="project-card" style="display: none; text-decoration: none; color: inherit; cursor: default;">
+          <div class="card-img" style="background: rgba(255, 255, 255, 0.1);"></div>
+          <div class="card-body">
+            <span class="card-tag" style="background: #C4D685; color: #1a1a2e;">COMING SOON</span>
+            <h3>STAY TUNED</h3>
+            <p>New case study dropping soon.<br>Watch this space.</p>
+          </div>
+        </a>
+      </div>
+    </div>
+
+    <!-- Testimonials (hidden) -->
+    <div class="section" id="sec-testimonials" style="display: none;">
+      <div class="retro-box">
+        <div class="pixel-deco">
+          <span class="px-icon px-bubble" style="transform: scale(2) rotate(-10deg);"></span>
+          <span class="px-icon px-heart" style="transform: scale(2) rotate(5deg);"></span>
+          <span class="px-icon px-bubble" style="transform: scale(2) rotate(12deg);"></span>
+        </div>
+        <h2>TESTIMONIALS</h2>
+        <p
+          style="font-family:'Press Start 2P',monospace; font-size:clamp(8px,1.8vw,12px); color:#2a1a3e; text-align:center; line-height:2; opacity:0.7;">
+          COMING SOON — COLLECTING KIND WORDS FROM AMAZING PEOPLE I'VE WORKED WITH.</p>
+        <div class="pixel-deco-bl">
+          <span class="px-icon px-star" style="transform: scale(2) rotate(-8deg);"></span>
+        </div>
+        <div class="pixel-deco-br">
+          <span class="px-icon px-heart" style="transform: scale(2) rotate(15deg);"></span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Contact -->
+    <div class="section" id="sec-contact">
+      <div class="contact-bento">
+        <div class="bento-main">
+          <div class="pixel-deco">
+            <span class="px-icon px-mail" style="transform: scale(2) rotate(25deg);"></span>
+            <span class="px-icon px-heart" style="transform: scale(2) rotate(10deg);"></span>
+          </div>
+          <h2>CONTACT</h2>
+          <p>YOU'VE SCROLLED THIS FAR...<br>MIGHT AS WELL SAY HI!</p>
+          <p style="font-size: clamp(5px, 1.2vw, 8px); opacity: 0.6; margin-top: 10px;">BONUS XP FOR REACHING THE FINAL
+            LEVEL.</p>
+          <div class="pixel-deco-bl">
+            <span class="px-icon px-star" style="transform: scale(2) rotate(-10deg);"></span>
+          </div>
+          <div class="pixel-deco-br">
+            <span class="px-icon px-star" style="transform: scale(2) rotate(8deg);"></span>
+          </div>
+        </div>
+        <div class="bento-card bento-email">
+          <span class="bento-label">EMAIL</span>
+          <a href="mailto:balvenkat23@gmail.com">balvenkat23@gmail.com</a>
+          <span class="px-icon px-duck" style="transform: scale(2); margin-top: 12px; display: inline-block;"></span>
+        </div>
+        <a class="bento-card bento-phone" href="https://www.linkedin.com/in/balaji-v-8a4aa1198" target="_blank"
+          style="text-decoration: none; color: inherit; cursor: pointer;">
+          <span class="bento-label">LINKEDIN</span>
+          <span
+            style="font-family:'Press Start 2P',monospace; font-size: clamp(8px, 2vw, 14px); color: #1a1a2e;">Connect
+            with me</span>
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <div id="pixel-gameboy">
+    <div class="gameboy-body">
+      <div class="gameboy-screen-frame">
+        <div class="gameboy-screen">
+          <div class="screen-title">LEVEL<br>UP!</div>
+          <div class="screen-sub">DESIGN × CODE</div>
+        </div>
+      </div>
+      <div class="gameboy-controls">
+        <div class="dpad">
+          <div class="dpad-h"></div>
+          <div class="dpad-v"></div>
+          <div class="dpad-center"></div>
+        </div>
+        <div class="gameboy-btns">
+          <div class="gb-btn gb-btn-b"></div>
+          <div class="gb-btn gb-btn-a"></div>
+        </div>
+      </div>
+      <div class="gameboy-label">BALAJI BOY</div>
+      <div id="gb-reset-btn">RESET</div>
+      <div class="gb-chars">
+        <span class="px-icon px-star" style="transform: scale(1.5) rotate(-10deg);"></span>
+        <span class="px-icon px-trophy" style="transform: scale(1.5) rotate(8deg);"></span>
+      </div>
+    </div>
+  </div>
+
+  <div id="nav-bar">
+    <div id="nav-menu">
+      <button class="nav-menu-btn active" data-section="0">Home</button>
+      <button class="nav-menu-btn" data-section="1">About</button>
+      <button class="nav-menu-btn" data-section="4">Case Study</button>
+      <button class="nav-menu-btn" data-section="5">Contact</button>
+    </div>
+    <div id="nav-label">PIXEL PUSHER<span id="nav-status">LEVEL 1 — START</span></div>
+    <div id="nav-dots">
+      <div class="nav-dot active" data-section="0"></div>
+      <div class="nav-dot" data-section="1"></div>
+      <div class="nav-dot" data-section="2"></div>
+      <div class="nav-dot" data-section="3"></div>
+      <div class="nav-dot" data-section="4"></div>
+      <div class="nav-dot" data-section="5"></div>
+    </div>
+  </div>
+
+  <script>
+    // Mobile popup dismiss
+    document.getElementById('mobile-popup-btn').addEventListener('click', function () {
+      document.getElementById('mobile-popup-overlay').style.display = 'none';
+    });
+
+    var canvas = document.getElementById('c');
+    var ctx = canvas.getContext('2d');
+
+    var W = window.innerWidth;
+    var H = window.innerHeight;
+    canvas.width = W;
+    canvas.height = H;
+
+    var GROUND_Y = H - Math.min(80, H * 0.12);
+
+    window.addEventListener('resize', function () {
+      W = window.innerWidth;
+      H = window.innerHeight;
+      canvas.width = W;
+      canvas.height = H;
+      GROUND_Y = H - Math.min(80, H * 0.12);
+      ball.y = Math.min(ball.y, GROUND_Y - BALL_RADIUS);
+    });
+
+    var GRAVITY = 0.6;
+    var BALL_RADIUS = 42;
+    var CHAR_W = 84;
+    var CHAR_H = 102;
+    var BRICK_SIZE = 40;
+    var SECTION_SIZE = 1500;
+
+    var SECTION_GAP = 1000;
+
+    // Dynamic Case Study width calculation based on exact screen size
+    var screenW = window.innerWidth;
+    var singleCardW = Math.max(300, Math.min(screenW * 0.65, 420));
+    var totalCardsW = (singleCardW * 4) + (24 * 3); // 4 cards + gaps
+    var dynProjWidth = totalCardsW + screenW; // Add window size for the entrance/exit buffers
+
+    var projectsWorldX = 4900; // Moved 700px closer to experience to remove the dead space before
+    var contactWorldX = projectsWorldX + dynProjWidth + 100; // Moved closer to remove dead space after
+
+    var SECTIONS = [
+      { id: 'hero', worldX: 0, width: 900 },
+      { id: 'about', worldX: 1000, width: 900 },
+      { id: 'skills', worldX: 2200, width: 1600 },
+      { id: 'experience', worldX: 4200, width: 900 },
+      { id: 'projects', worldX: projectsWorldX, width: dynProjWidth },
+      { id: 'contact', worldX: contactWorldX, width: 900 }
+    ];
+
+    // Character animation state
+    var character = {
+      frame: 0,
+      frameTimer: 0,
+      facing: 1,
+      state: 'idle',
+    };
+
+    // Canvas-drawn character — NINJA — all coords scale with s = h/68
+    function drawCharSprite(ctx, x, y, w, h, state, facing, frame) {
+      ctx.save();
+      ctx.translate(x, y);
+      if (facing < 0) { ctx.scale(-1, 1); }
+
+      var s = h / 68;
+      var t = frame;
+
+      // Leg animation
+      var legBack = 0, legFront = 0;
+      if (state === 'run') {
+        legBack = Math.sin(t * 0.5) * 7;
+        legFront = Math.sin(t * 0.5 + Math.PI) * 7;
+      }
+
+      // Katana at hip — angled down, tucked into sash
+      ctx.save();
+      ctx.translate(-8 * s, 5 * s);
+      ctx.rotate(0.25);
+      // Scabbard — extending forward
+      ctx.fillStyle = '#1a1a2e';
+      ctx.fillRect(0, -2 * s, 38 * s, 4 * s);
+      // Scabbard tip
+      ctx.fillStyle = '#444';
+      ctx.beginPath();
+      ctx.moveTo(38 * s, -2 * s);
+      ctx.lineTo(38 * s, 2 * s);
+      ctx.lineTo(42 * s, 0);
+      ctx.closePath();
+      ctx.fill();
+      // Scabbard accent rings
+      ctx.fillStyle = '#FFD700';
+      ctx.fillRect(8 * s, -2.5 * s, 1.5 * s, 5 * s);
+      ctx.fillRect(20 * s, -2.5 * s, 1.5 * s, 5 * s);
+      // Guard (tsuba)
+      ctx.fillStyle = '#FFD700';
+      ctx.fillRect(-2 * s, -5 * s, 3 * s, 10 * s);
+      ctx.fillStyle = '#DAA520';
+      ctx.fillRect(-1.5 * s, -4 * s, 2 * s, 8 * s);
+      // Handle — extending behind
+      ctx.fillStyle = '#8B0000';
+      ctx.fillRect(-14 * s, -2.5 * s, 12 * s, 5 * s);
+      // Diamond wrap pattern
+      ctx.fillStyle = '#AA2222';
+      for (var hw = -12; hw <= -4; hw += 3) {
+        ctx.fillRect(hw * s, -1 * s, 2 * s, 2 * s);
+      }
+      // Pommel (kashira)
+      ctx.fillStyle = '#FFD700';
+      ctx.beginPath();
+      ctx.arc(-14 * s, 0, 3 * s, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.restore();
+
+      // Back arm
+      var armSwing = 0;
+      if (state === 'run') armSwing = Math.sin(t * 0.5 + Math.PI) * 0.6;
+      else armSwing = 0.05;
+
+      ctx.save();
+      ctx.translate(-2 * s, -6 * s);
+      ctx.rotate(armSwing);
+      ctx.fillStyle = '#2a2a3e';
+      ctx.fillRect(-2 * s, 0, 6 * s, 14 * s);
+      // Hand wraps
+      ctx.fillStyle = '#555';
+      ctx.fillRect(-2 * s, 11 * s, 6 * s, 3 * s);
+      // Hand
+      ctx.fillStyle = '#FFD4A0';
+      ctx.beginPath();
+      ctx.arc(0, 16 * s, 3 * s, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.restore();
+
+      // Back leg
+      ctx.save();
+      ctx.translate(-2 * s, h / 2 - 16 * s);
+      ctx.rotate(legBack * 0.04);
+      ctx.fillStyle = '#222233';
+      ctx.fillRect(-4 * s, 0, 9 * s, 16 * s);
+      // Leg wraps
+      ctx.fillStyle = '#555';
+      ctx.fillRect(-4 * s, 12 * s, 9 * s, 2 * s);
+      ctx.fillRect(-4 * s, 8 * s, 9 * s, 1.5 * s);
+      // Tabi boots
+      ctx.fillStyle = '#111';
+      ctx.fillRect(-4 * s, 15 * s, 12 * s, 5 * s);
+      ctx.fillStyle = '#1a1a2e';
+      ctx.fillRect(-4 * s, 18 * s, 12 * s, 2 * s);
+      ctx.restore();
+
+      // Body — ninja gi (dark top)
+      ctx.fillStyle = '#2a2a3e';
+      ctx.beginPath();
+      ctx.roundRect(-8 * s, -12 * s, 18 * s, 14 * s, 2 * s);
+      ctx.fill();
+
+      // Chest wrap / armor plate
+      ctx.fillStyle = '#3a3a4e';
+      ctx.fillRect(-6 * s, -10 * s, 14 * s, 4 * s);
+      ctx.fillRect(-5 * s, -6 * s, 12 * s, 3 * s);
+
+      // Lower body — dark pants
+      ctx.fillStyle = '#222233';
+      ctx.beginPath();
+      ctx.roundRect(-8 * s, 0, 18 * s, h / 2 - 14 * s, 2 * s);
+      ctx.fill();
+
+      // Belt / sash
+      ctx.fillStyle = '#8B0000';
+      ctx.fillRect(-9 * s, -1 * s, 20 * s, 4 * s);
+      // Sash knot
+      ctx.fillStyle = '#6B0000';
+      ctx.beginPath();
+      ctx.arc(8 * s, 1 * s, 3 * s, 0, Math.PI * 2);
+      ctx.fill();
+      // Sash tail
+      ctx.fillStyle = '#8B0000';
+      ctx.beginPath();
+      ctx.moveTo(10 * s, 2 * s);
+      ctx.lineTo(16 * s, 8 * s);
+      ctx.lineTo(14 * s, 9 * s);
+      ctx.lineTo(8 * s, 3 * s);
+      ctx.fill();
+
+      // Front leg
+      ctx.save();
+      ctx.translate(2 * s, h / 2 - 16 * s);
+      ctx.rotate(legFront * 0.04);
+      ctx.fillStyle = '#1a1a2e';
+      ctx.fillRect(-4 * s, 0, 9 * s, 16 * s);
+      // Leg wraps
+      ctx.fillStyle = '#555';
+      ctx.fillRect(-4 * s, 12 * s, 9 * s, 2 * s);
+      ctx.fillRect(-4 * s, 8 * s, 9 * s, 1.5 * s);
+      // Tabi boots
+      ctx.fillStyle = '#111';
+      ctx.fillRect(-3 * s, 15 * s, 13 * s, 5 * s);
+      ctx.fillStyle = '#1a1a2e';
+      ctx.fillRect(-3 * s, 18 * s, 13 * s, 2 * s);
+      // Split toe
+      ctx.fillStyle = '#222';
+      ctx.fillRect(3 * s, 15 * s, 1.5 * s, 4 * s);
+      ctx.restore();
+
+      // Front arm
+      if (state === 'run') armSwing = Math.sin(t * 0.5) * 0.6;
+      else armSwing = 0.1;
+
+      ctx.save();
+      ctx.translate(5 * s, -6 * s);
+      ctx.rotate(armSwing);
+      ctx.fillStyle = '#2a2a3e';
+      ctx.fillRect(-2 * s, 0, 6 * s, 14 * s);
+      // Arm wraps
+      ctx.fillStyle = '#555';
+      ctx.fillRect(-2 * s, 11 * s, 6 * s, 3 * s);
+      // Hand
+      ctx.fillStyle = '#FFD4A0';
+      ctx.beginPath();
+      ctx.arc(0, 16 * s, 3 * s, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.restore();
+
+      // Head — masked ninja head
+      // Base head shape (mask)
+      ctx.fillStyle = '#2a2a3e';
+      ctx.beginPath();
+      ctx.arc(2 * s, -20 * s, 12 * s, 0, Math.PI * 2);
+      ctx.fill();
+
+      // Eye slit area — skin showing through mask
+      ctx.fillStyle = '#FFD4A0';
+      ctx.fillRect(-8 * s, -24 * s, 22 * s, 7 * s);
+
+      // Mask over eye slit (top and bottom wraps)
+      ctx.fillStyle = '#2a2a3e';
+      ctx.fillRect(-10 * s, -26 * s, 24 * s, 3 * s);
+      ctx.fillRect(-10 * s, -18 * s, 24 * s, 3 * s);
+
+      // Eyes — intense ninja eyes
+      // Left eye
+      ctx.fillStyle = '#fff';
+      ctx.beginPath();
+      ctx.ellipse(2 * s, -21 * s, 4 * s, 3 * s, 0, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.fillStyle = '#222';
+      ctx.beginPath();
+      ctx.ellipse(3 * s, -21 * s, 2.5 * s, 2.5 * s, 0, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.fillStyle = '#fff';
+      ctx.beginPath();
+      ctx.arc(2 * s, -22 * s, 1 * s, 0, Math.PI * 2);
+      ctx.fill();
+
+      // Right eye
+      ctx.fillStyle = '#fff';
+      ctx.beginPath();
+      ctx.ellipse(11 * s, -21 * s, 4 * s, 3 * s, 0, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.fillStyle = '#222';
+      ctx.beginPath();
+      ctx.ellipse(12 * s, -21 * s, 2.5 * s, 2.5 * s, 0, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.fillStyle = '#fff';
+      ctx.beginPath();
+      ctx.arc(11 * s, -22 * s, 1 * s, 0, Math.PI * 2);
+      ctx.fill();
+
+      // Angry eyebrows
+      ctx.fillStyle = '#1a1a2e';
+      ctx.save();
+      ctx.translate(2 * s, -25 * s);
+      ctx.rotate(0.15);
+      ctx.fillRect(-3 * s, 0, 7 * s, 2 * s);
+      ctx.restore();
+      ctx.save();
+      ctx.translate(11 * s, -25 * s);
+      ctx.rotate(-0.15);
+      ctx.fillRect(-4 * s, 0, 7 * s, 2 * s);
+      ctx.restore();
+
+      // Headband (hachimaki)
+      ctx.fillStyle = '#CC0000';
+      ctx.fillRect(-13 * s, -28 * s, 28 * s, 4 * s);
+      // Headband tails flowing behind
+      ctx.beginPath();
+      ctx.moveTo(-13 * s, -28 * s);
+      ctx.quadraticCurveTo(-18 * s, -26 * s, -22 * s, -30 * s);
+      ctx.quadraticCurveTo(-18 * s, -28 * s, -22 * s, -24 * s);
+      ctx.lineTo(-13 * s, -24 * s);
+      ctx.closePath();
+      ctx.fill();
+      // Headband knot
+      ctx.fillStyle = '#990000';
+      ctx.beginPath();
+      ctx.arc(-12 * s, -26 * s, 2.5 * s, 0, Math.PI * 2);
+      ctx.fill();
+
+      // Mask lower wrap detail
+      ctx.fillStyle = '#333';
+      ctx.fillRect(-6 * s, -15 * s, 18 * s, 2 * s);
+
+      ctx.restore();
+    }
+
+    var ball = {
+      worldX: 0,
+      y: GROUND_Y - BALL_RADIUS,
+      vy: 0,
+      rotation: 0,
+      onGround: true
+    };
+
+    var cameraX = -W / 2;
+    var currentSection = 0;
+    var paused = true;
+
+    var SLOT_SIZE = 300;
+    var generatedSlots = {};
+
+    var clouds = [];
+    var trees = [];
+    var bushes = [];
+    var flowers = [];
+
+    function hashSlot(slot, seed) {
+      var h = Math.sin(slot * 127.1 + seed * 311.7) * 43758.5453;
+      return h - Math.floor(h);
+    }
+
+    function generateSlot(slot) {
+      if (generatedSlots[slot]) return;
+      generatedSlots[slot] = true;
+
+      var baseX = slot * SLOT_SIZE;
+      var r1 = hashSlot(slot, 1);
+      var r2 = hashSlot(slot, 2);
+      var r3 = hashSlot(slot, 3);
+
+      // Spawn a cloud in ~30% of slots (3-4 visible clouds)
+      if (r1 < 0.3) {
+        clouds.push({
+          worldX: baseX + hashSlot(slot, 10) * SLOT_SIZE,
+          y: 40 + hashSlot(slot, 11) * 100,
+          scale: 0.7 + hashSlot(slot, 12) * 0.6
+        });
+      }
+
+      // Only 1 tree every ~4 slots (4 trees per screen width)
+      if (r2 > 0.5) {
+        trees.push({
+          worldX: baseX + hashSlot(slot, 20) * SLOT_SIZE,
+          scale: 0.6 + hashSlot(slot, 21) * 0.8
+        });
+      }
+
+      if (r3 > 0.3 && r3 < 0.7) {
+        bushes.push({
+          worldX: baseX + hashSlot(slot, 30) * SLOT_SIZE,
+          scale: 0.7 + hashSlot(slot, 31) * 0.5
+        });
+      }
+
+      // Flowers — spawn 1-3 per slot
+      var r4 = hashSlot(slot, 4);
+      if (r4 < 0.6) {
+        var flowerCount = 1 + Math.floor(hashSlot(slot, 40) * 3);
+        for (var f = 0; f < flowerCount; f++) {
+          flowers.push({
+            worldX: baseX + hashSlot(slot, 41 + f) * SLOT_SIZE,
+            stemH: 12 + hashSlot(slot, 44 + f) * 18,
+            petalSeed: hashSlot(slot, 47 + f)
+          });
+        }
+      }
+    }
+
+    function generateSceneryAround(centerX) {
+      var minSlot = Math.floor((centerX - W) / SLOT_SIZE) - 1;
+      var maxSlot = Math.ceil((centerX + W * 2) / SLOT_SIZE) + 1;
+      for (var s = minSlot; s <= maxSlot; s++) {
+        generateSlot(s);
+      }
+    }
+
+    // Direct scroll-driven movement — moves only while scrolling
+    var scrollDelta = 0;
+    var moveDir = 0;
+    var MOVE_SPEED = 9;
+    var lastSec = SECTIONS[SECTIONS.length - 1];
+    var maxX = lastSec.worldX + lastSec.width / 2;
+
+    // Scroll up = forward, scroll down = backward
+    window.addEventListener('wheel', function (e) {
+      e.preventDefault();
+      paused = false;
+      var absDelta = Math.abs(e.deltaY);
+      if (absDelta >= 50) {
+        // Windows mouse wheel — large deltaY, boost speed
+        scrollDelta += Math.sign(e.deltaY) * Math.min(absDelta * 0.5, 40);
+      } else {
+        // Mac trackpad — keep original speed
+        scrollDelta += e.deltaY > 0 ? MOVE_SPEED : -MOVE_SPEED;
+      }
+    }, { passive: false });
+
+    var lastTouchY = 0;
+    window.addEventListener('touchstart', function (e) {
+      lastTouchY = e.touches[0].clientY;
+      paused = false;
+    }, { passive: true });
+    window.addEventListener('touchmove', function (e) {
+      e.preventDefault();
+      var delta = lastTouchY - e.touches[0].clientY;
+      lastTouchY = e.touches[0].clientY;
+      scrollDelta += delta * 0.8;
+    }, { passive: false });
+
+    // Nav dot clicks
+    document.querySelectorAll('.nav-dot').forEach(function (dot) {
+      dot.addEventListener('click', function () {
+        var sec = parseInt(this.getAttribute('data-section'));
+        currentSection = sec;
+        ball.worldX = SECTIONS[sec].worldX + SECTIONS[sec].width / 2;
+        cameraX = ball.worldX - W / 2;
+        generateSceneryAround(ball.worldX);
+        scrollDelta = 0;
+        paused = false;
+      });
+    });
+
+    // Nav menu clicks
+    document.querySelectorAll('.nav-menu-btn').forEach(function (btn) {
+      btn.addEventListener('click', function () {
+        var sec = parseInt(this.getAttribute('data-section'));
+        currentSection = sec;
+        ball.worldX = SECTIONS[sec].worldX + SECTIONS[sec].width / 2;
+        cameraX = ball.worldX - W / 2;
+        generateSceneryAround(ball.worldX);
+        scrollDelta = 0;
+        paused = false;
+      });
+    });
+
+    // Let's Talk button click
+    var letsTalkBtn = document.querySelector('.lets-talk-btn');
+    if (letsTalkBtn) {
+      letsTalkBtn.addEventListener('click', function (e) {
+        e.preventDefault();
+        var sec = SECTIONS.length - 1; // It goes to the last section (Contact)
+        currentSection = sec;
+        ball.worldX = SECTIONS[sec].worldX + SECTIONS[sec].width / 2;
+        cameraX = ball.worldX - W / 2;
+        generateSceneryAround(ball.worldX);
+        scrollDelta = 0;
+        paused = false;
+      });
+    }
+
+    // Reset button — go back to landing section
+    document.getElementById('gb-reset-btn').addEventListener('click', function () {
+      ball.worldX = SECTIONS[0].worldX + SECTIONS[0].width / 2;
+      currentSection = 0;
+      cameraX = ball.worldX - W / 2;
+      for (var ci = 0; ci < skillCoins.length; ci++) {
+        skillCoins[ci] = { active: false, triggered: false, y: 0, spin: 0, vy: 0 };
+      }
+      scrollDelta = 0;
+      paused = false;
+    });
+
+    // Update
+    function update() {
+      cameraX = ball.worldX - W / 2;
+      generateSceneryAround(ball.worldX);
+
+      if (paused) return;
+
+      // Apply scroll input directly
+      if (Math.abs(scrollDelta) > 0.5) {
+        moveDir = scrollDelta > 0 ? 1 : -1;
+        ball.worldX += scrollDelta;
+        ball.rotation += scrollDelta / BALL_RADIUS;
+        scrollDelta = 0;
+      } else {
+        scrollDelta = 0;
+        moveDir = 0;
+      }
+
+      // Clamp position
+      if (ball.worldX < 0) ball.worldX = 0;
+      if (ball.worldX > maxX) ball.worldX = maxX;
+
+      // Track current section
+      for (var i = SECTIONS.length - 1; i >= 0; i--) {
+        if (ball.worldX >= SECTIONS[i].worldX - SECTIONS[i].width * 0.3) {
+          currentSection = i;
+          break;
+        }
+      }
+
+      // Brick pyramid climbing logic
+      var brickInfo = getBrickStairInfo();
+      var bx = ball.worldX;
+      if (bx >= brickInfo.startX && bx <= brickInfo.endX) {
+        var col = Math.floor((bx - brickInfo.startX) / BRICK_COL_W);
+        if (col >= PYRAMID_COLS) col = PYRAMID_COLS - 1;
+        var bricks = getPyramidColHeight(col);
+        var topY = GROUND_Y - bricks * (BS + BRICK_GAP);
+        ball.y = topY - BALL_RADIUS;
+      } else {
+        ball.y = GROUND_Y - BALL_RADIUS;
+      }
+      // Coin trigger logic — check if character crosses each skill label on flat top
+      var flatStartCol = 3;
+      var flatCols = 12;
+      var spacing = (flatCols * BRICK_COL_W) / BRICK_TOOLS.length;
+      for (var ci = 0; ci < BRICK_TOOLS.length; ci++) {
+        var labelWorldX = brickInfo.startX + flatStartCol * BRICK_COL_W + spacing * ci + spacing / 2;
+        if (!skillCoins[ci].triggered && bx >= labelWorldX - 20 && bx <= labelWorldX + 20) {
+          skillCoins[ci].triggered = true;
+          skillCoins[ci].active = true;
+          skillCoins[ci].y = 0;
+          skillCoins[ci].vy = 9;
+          skillCoins[ci].spin = 0;
+        }
+        // Animate active coins
+        if (skillCoins[ci].active) {
+          skillCoins[ci].y += skillCoins[ci].vy;
+          skillCoins[ci].vy -= 0.2;
+          skillCoins[ci].spin += 0.3;
+          if (skillCoins[ci].y < -10) {
+            skillCoins[ci].active = false;
+          }
+        }
+      }
+
+      cameraX = ball.worldX - W / 2;
+    }
+
+    // Drawing helpers
+    function drawSky() {
+      // Clean pixel-art sky — flat light blue like classic platformers
+      ctx.fillStyle = '#6BB8E8';
+      ctx.fillRect(0, 0, W, GROUND_Y);
+    }
+
+    function drawCloud(sx, sy, scale) {
+      // Pixel-art Mario SMB cloud — blocky with 2 bumps
+      var P = 8 * scale;
+
+      // Cloud shape: column heights (like bush but white)
+      var cols = [
+        [-5, 1], [-4, 2], [-3, 3], [-2, 3],
+        [-1, 4], [0, 4], [1, 4],
+        [2, 3], [3, 3], [4, 2], [5, 1]
+      ];
+
+      for (var i = 0; i < cols.length; i++) {
+        var col = cols[i][0];
+        var ht = cols[i][1];
+        var bx = sx + col * P;
+
+        for (var r = 0; r < ht; r++) {
+          var by = sy - r * P;
+          if (r === ht - 1) {
+            ctx.fillStyle = '#ffffff'; // bright top
+          } else if (r === 0) {
+            ctx.fillStyle = '#d8e8ff'; // slight shadow bottom
+          } else {
+            ctx.fillStyle = '#f0f8ff'; // body
+          }
+          ctx.fillRect(bx, by, P, P);
+        }
+      }
+
+      // Outline on top
+      ctx.fillStyle = '#b0c8e8';
+      for (var i = 0; i < cols.length; i++) {
+        var col = cols[i][0];
+        var ht = cols[i][1];
+        ctx.fillRect(sx + col * P, sy - ht * P + P, P, 1);
+      }
+
+      // Eye dots (Mario cloud face)
+      ctx.fillStyle = '#222';
+      ctx.fillRect(sx - 2 * P, sy - 1 * P, P * 0.5, P * 0.5);
+      ctx.fillRect(sx + 2 * P, sy - 1 * P, P * 0.5, P * 0.5);
+    }
+
+    function drawTree(sx, scale) {
+      var P = 6 * scale;
+      var baseY = GROUND_Y;
+
+      // Brown trunk — taller
+      var trunkW = 3;
+      var trunkH = 10;
+      ctx.fillStyle = '#8B5E3C';
+      for (var r = 0; r < trunkH; r++) {
+        for (var c = -1; c <= 1; c++) {
+          ctx.fillRect(sx + c * P, baseY - (r + 1) * P, P, P);
+        }
+      }
+      // Darker trunk center
+      ctx.fillStyle = '#6B3E1C';
+      for (var r = 0; r < trunkH; r++) {
+        ctx.fillRect(sx, baseY - (r + 1) * P, P, P);
+      }
+
+      // Round green canopy — circular pixel pattern
+      var canopyY = baseY - trunkH * P;
+      var canopyRows = [
+        [-3, 3],   // row 0 (bottom): 7 blocks wide
+        [-4, 4],   // row 1: 9 blocks
+        [-4, 4],   // row 2: 9 blocks
+        [-5, 5],   // row 3: 11 blocks
+        [-5, 5],   // row 4: 11 blocks
+        [-5, 5],   // row 5: 11 blocks
+        [-4, 4],   // row 6: 9 blocks
+        [-4, 4],   // row 7: 9 blocks
+        [-3, 3],   // row 8: 7 blocks
+        [-2, 2],   // row 9: 5 blocks
+        [-1, 1]    // row 10 (top): 3 blocks
+      ];
+
+      for (var r = 0; r < canopyRows.length; r++) {
+        var left = canopyRows[r][0];
+        var right = canopyRows[r][1];
+        var y = canopyY - (r + 1) * P;
+
+        for (var c = left; c <= right; c++) {
+          var bx = sx + c * P;
+          // Color: lighter top-left, darker bottom-right
+          if (r >= 8) {
+            ctx.fillStyle = '#5edb5e'; // bright top
+          } else if (r >= 5 && Math.abs(c) <= 2) {
+            ctx.fillStyle = '#4cc84c'; // upper mid highlight
+          } else if (Math.abs(c) >= right - 1) {
+            ctx.fillStyle = '#1a7a1a'; // dark edges
+          } else if (r < 2) {
+            ctx.fillStyle = '#1e8a1e'; // darker bottom
+          } else {
+            ctx.fillStyle = '#2da82d'; // standard green
+          }
+          ctx.fillRect(bx, y, P, P);
+        }
+      }
+
+      // Light highlight on top-left
+      ctx.fillStyle = 'rgba(140,255,140,0.35)';
+      ctx.fillRect(sx - 2 * P, canopyY - 8 * P, P, P);
+      ctx.fillRect(sx - 3 * P, canopyY - 7 * P, P, P);
+      ctx.fillRect(sx - 3 * P, canopyY - 6 * P, P, P);
+
+      // Dark outline on top
+      ctx.fillStyle = '#146814';
+      for (var r = 0; r < canopyRows.length; r++) {
+        var left = canopyRows[r][0];
+        var right = canopyRows[r][1];
+        var y = canopyY - (r + 1) * P;
+        var nextLeft = r < canopyRows.length - 1 ? canopyRows[r + 1][0] : 0;
+        var nextRight = r < canopyRows.length - 1 ? canopyRows[r + 1][1] : 0;
+
+        // Top edge where next row is narrower
+        if (right > nextRight) {
+          for (var c = left; c <= right; c++) {
+            if (c < nextLeft || c > nextRight) {
+              ctx.fillRect(sx + c * P, y, P, 2);
+            }
+          }
+        }
+        if (r === canopyRows.length - 1) {
+          for (var c = left; c <= right; c++) {
+            ctx.fillRect(sx + c * P, y, P, 2);
+          }
+        }
+      }
+    }
+
+    function drawBush(sx, scale) {
+      // Pixel-art Mario SMB bush — 3 rounded bumps made of blocks
+      var P = 6 * scale; // pixel size scaled
+      var baseY = GROUND_Y;
+
+      // Bush shape: 3 bumps defined as column heights
+      // [left bump, middle bump, right bump] — classic Mario triple-bush
+      var cols = [
+        // col offset from center, height in blocks
+        [-6, 1], [-5, 2], [-4, 3], [-3, 4], [-2, 4],
+        [-1, 5], [0, 5], [1, 5],
+        [2, 4], [3, 4], [4, 3], [5, 2], [6, 1]
+      ];
+
+      // Main body
+      for (var i = 0; i < cols.length; i++) {
+        var col = cols[i][0];
+        var ht = cols[i][1];
+        var bx = sx + col * P;
+
+        for (var r = 0; r < ht; r++) {
+          var by = baseY - (r + 1) * P;
+          // Color variation: lighter on top, darker on edges
+          if (r === ht - 1) {
+            ctx.fillStyle = '#5eee5e'; // bright top
+          } else if (r === ht - 2 && ht > 2) {
+            ctx.fillStyle = '#3ebe3e'; // mid highlight
+          } else if (Math.abs(col) >= 5) {
+            ctx.fillStyle = '#1a7a1a'; // dark edges
+          } else {
+            ctx.fillStyle = '#28a828'; // standard green
+          }
+          ctx.fillRect(bx, by, P, P);
+        }
+      }
+
+      // Highlight spots (white-ish eyes like Mario bushes)
+      ctx.fillStyle = 'rgba(180,255,180,0.6)';
+      ctx.fillRect(sx - 3 * P, baseY - 3 * P, P, P);
+      ctx.fillRect(sx + 2 * P, baseY - 3 * P, P, P);
+
+      // Dark outline on top edge
+      ctx.fillStyle = '#146814';
+      for (var i = 0; i < cols.length; i++) {
+        var col = cols[i][0];
+        var ht = cols[i][1];
+        var bx = sx + col * P;
+        var topY = baseY - ht * P;
+        ctx.fillRect(bx, topY, P, 2);
+      }
+      // Side edges
+      ctx.fillRect(sx - 6 * P, baseY - 1 * P, 2, P);
+      ctx.fillRect(sx + 6 * P + P - 2, baseY - 1 * P, 2, P);
+    }
+
+
+    function drawGround() {
+      var groundH = H - GROUND_Y;
+      var P = 6; // pixel block size
+
+      // Grass top layer — bright green strip
+      ctx.fillStyle = '#8eef3e';
+      ctx.fillRect(0, GROUND_Y, W, P * 2);
+
+      // Grass highlight
+      ctx.fillStyle = '#a8ff58';
+      ctx.fillRect(0, GROUND_Y, W, P);
+
+      // Grass dark line
+      ctx.fillStyle = '#5cb820';
+      ctx.fillRect(0, GROUND_Y + P * 2, W, P);
+
+      // Grass tufts — pixel blocks sticking up from ground
+      var offsetX = ((cameraX % (P * 8)) + P * 8) % (P * 8);
+      for (var x = -offsetX - P * 8; x < W + P * 8; x += P * 8) {
+        // Small tuft
+        ctx.fillStyle = '#5cb820';
+        ctx.fillRect(x + P, GROUND_Y - P, P, P);
+        ctx.fillRect(x + P * 2, GROUND_Y - P * 2, P, P);
+        ctx.fillRect(x + P * 3, GROUND_Y - P, P, P);
+
+        // Tall tuft offset
+        ctx.fillStyle = '#4aa018';
+        ctx.fillRect(x + P * 5, GROUND_Y - P, P, P);
+        ctx.fillRect(x + P * 6, GROUND_Y - P * 2, P, P * 2);
+        ctx.fillRect(x + P * 6, GROUND_Y - P * 3, P, P);
+        ctx.fillRect(x + P * 7, GROUND_Y - P, P, P);
+      }
+
+      // Dirt layer — dark earth with rocks
+      var dirtTop = GROUND_Y + P * 3;
+      ctx.fillStyle = '#5a6e7a';
+      ctx.fillRect(0, dirtTop, W, H - dirtTop);
+
+      // Dirt variation — slightly lighter patches
+      ctx.fillStyle = '#4d6070';
+      var dirtOffset = ((cameraX % (P * 6)) + P * 6) % (P * 6);
+      for (var x = -dirtOffset - P * 6; x < W + P * 6; x += P * 6) {
+        for (var row = 0; row < Math.ceil((H - dirtTop) / (P * 3)); row++) {
+          var y = dirtTop + row * P * 3;
+          var shift = (row % 2) * P * 3;
+          ctx.fillRect(x + shift, y, P * 2, P * 2);
+        }
+      }
+
+      // Rock/pebble spots in dirt
+      ctx.fillStyle = '#3d5060';
+      var rockOffset = ((cameraX % (P * 10)) + P * 10) % (P * 10);
+      for (var x = -rockOffset; x < W + P * 10; x += P * 10) {
+        ctx.fillRect(x + P, dirtTop + P * 2, P * 2, P);
+        ctx.fillRect(x + P * 5, dirtTop + P * 4, P, P);
+        ctx.fillRect(x + P * 7, dirtTop + P, P * 2, P * 2);
+      }
+
+      // Light blue gem spots
+      ctx.fillStyle = '#6aa8c0';
+      var gemOffset = ((cameraX % (P * 14)) + P * 14) % (P * 14);
+      for (var x = -gemOffset; x < W + P * 14; x += P * 14) {
+        ctx.fillRect(x + P * 3, dirtTop + P * 3, P, P);
+        ctx.fillRect(x + P * 9, dirtTop + P * 5, P, P);
+      }
+    }
+
+    function drawFlower(sx) {
+      var P = 4; // pixel size
+
+      // Stem
+      ctx.fillStyle = '#3a8a2a';
+      ctx.fillRect(sx, GROUND_Y - 16, P, 14);
+
+      // Stem leaf
+      ctx.fillStyle = '#4aaa3a';
+      ctx.fillRect(sx + P, GROUND_Y - 10, P, P);
+      ctx.fillRect(sx + P * 2, GROUND_Y - 12, P, P);
+
+      // Petals (white)
+      ctx.fillStyle = '#ffffff';
+      var cx = sx;
+      var cy = GROUND_Y - 18;
+      ctx.fillRect(cx, cy - P, P, P);        // top
+      ctx.fillRect(cx, cy + P, P, P);        // bottom
+      ctx.fillRect(cx - P, cy, P, P);        // left
+      ctx.fillRect(cx + P, cy, P, P);        // right
+
+      // Center (orange/yellow)
+      ctx.fillStyle = '#f0a020';
+      ctx.fillRect(cx, cy, P, P);
+    }
+
+    function drawCharacter(sx) {
+      if (moveDir !== 0) {
+        character.state = 'run';
+      } else {
+        character.state = 'idle';
+      }
+
+      if (moveDir > 0) character.facing = 1;
+      else if (moveDir < 0) character.facing = -1;
+
+      character.frameTimer++;
+      if (character.state === 'run') {
+        character.frame = character.frameTimer;
+      }
+
+      var charBottomY = ball.y + BALL_RADIUS;
+      var charCenterY = charBottomY - CHAR_H / 2;
+
+      drawCharSprite(ctx, sx, charCenterY, CHAR_W, CHAR_H, character.state, character.facing, character.frame);
+    }
+
+    // Overlay positioning
+    function updateOverlay() {
+      for (var i = 0; i < SECTIONS.length; i++) {
+        var s = SECTIONS[i];
+        var el = document.getElementById('sec-' + s.id);
+        if (!el) continue;
+        var sectionCenter = s.worldX + s.width / 2 - cameraX;
+        var leftOffset = sectionCenter - W / 2;
+        el.style.transform = 'translateX(' + leftOffset + 'px)';
+        el.style.width = W + 'px';
+        var distFromCenter = Math.abs(sectionCenter - W / 2);
+        if (s.id === 'hero') {
+          el.style.opacity = 1;
+        } else {
+          el.style.opacity = Math.max(0, 1 - distFromCenter / (W * 0.6));
+        }
+      }
+
+      var dots = document.querySelectorAll('.nav-dot');
+      for (var i = 0; i < dots.length; i++) {
+        if (i <= currentSection) dots[i].classList.add('active');
+        else dots[i].classList.remove('active');
+      }
+
+      // Update menu button active state
+      var menuBtns = document.querySelectorAll('.nav-menu-btn');
+      for (var m = 0; m < menuBtns.length; m++) {
+        var btnSec = parseInt(menuBtns[m].getAttribute('data-section'));
+        if (btnSec === currentSection) menuBtns[m].classList.add('active');
+        else menuBtns[m].classList.remove('active');
+      }
+
+      var levelNames = ['START', 'ABOUT ME', 'SKILLS', 'EXPERIENCE', 'CASE STUDIES', 'TESTIMONIALS', 'CONTACT'];
+      var navStatus = document.getElementById('nav-status');
+      if (navStatus) {
+        navStatus.textContent = 'LEVEL ' + (currentSection + 1) + ' — ' + levelNames[currentSection];
+      }
+
+      // Game Boy: show on hero (before scroll) and on last section with win message
+      var gb = document.getElementById('pixel-gameboy');
+      if (gb) {
+        var gbScreen = gb.querySelector('.screen-title');
+        var gbSub = gb.querySelector('.screen-sub');
+        var resetBtn = document.getElementById('gb-reset-btn');
+        if (currentSection === SECTIONS.length - 1) {
+          gb.classList.remove('hidden');
+          if (gbScreen) gbScreen.innerHTML = 'YOU<br>WIN!';
+          if (gbSub) gbSub.textContent = 'QUEST COMPLETE ★';
+          if (resetBtn) resetBtn.style.display = 'block';
+        } else if (!paused && ball.worldX < 50) {
+          gb.classList.remove('hidden');
+          if (gbScreen) gbScreen.innerHTML = 'LEVEL<br>UP!';
+          if (gbSub) gbSub.textContent = 'DESIGN × CODE';
+          if (resetBtn) resetBtn.style.display = 'none';
+        } else if (ball.worldX >= 50) {
+          gb.classList.add('hidden');
+        }
+      }
+    }
+
+    // Pixel-art Taj Mahal
+    function drawTajMahal(cx, baseY, scale) {
+      var P = 3 * scale;
+      ctx.save();
+      var c = { wall: '#F5E6C8', wallMid: '#ECD8B0', wallShade: '#E0C898', arch: '#C4A070', archDeep: '#A08060', archDark: '#886848', dome: '#FFF5E0', domeMid: '#F0DDB0', trim: '#D4B896', green: '#4A8C3F', greenDark: '#3A7030', water: '#6BC4E8' };
+      // Full base — ground level
+      ctx.fillStyle = c.green; ctx.fillRect(cx - 32 * P, baseY, 64 * P, 2 * P);
+      ctx.fillStyle = c.greenDark; ctx.fillRect(cx - 32 * P, baseY + 2 * P, 64 * P, P);
+      // Stepped platform (widest at bottom)
+      ctx.fillStyle = c.wallShade; ctx.fillRect(cx - 30 * P, baseY - P, 60 * P, P);
+      ctx.fillStyle = c.wallMid; ctx.fillRect(cx - 28 * P, baseY - 2 * P, 56 * P, P);
+      ctx.fillStyle = c.wall; ctx.fillRect(cx - 26 * P, baseY - 3 * P, 52 * P, P);
+      ctx.fillStyle = c.wallMid; ctx.fillRect(cx - 24 * P, baseY - 4 * P, 48 * P, P);
+      ctx.fillStyle = c.wall; ctx.fillRect(cx - 22 * P, baseY - 5 * P, 44 * P, P);
+      // Water channel
+      ctx.fillStyle = c.water; ctx.fillRect(cx - 3 * P, baseY - 3 * P, 6 * P, P);
+      // Bushes
+      ctx.fillStyle = c.green; ctx.fillRect(cx - 9 * P, baseY - 6 * P, 3 * P, 2 * P); ctx.fillRect(cx - 8 * P, baseY - 7 * P, 2 * P, P);
+      ctx.fillRect(cx + 6 * P, baseY - 6 * P, 3 * P, 2 * P); ctx.fillRect(cx + 6 * P, baseY - 7 * P, 2 * P, P);
+      ctx.fillStyle = c.wall; ctx.fillRect(cx - 11 * P, baseY - 22 * P, 22 * P, 18 * P);
+      ctx.fillStyle = c.wallShade; ctx.fillRect(cx - 11 * P, baseY - 22 * P, P, 18 * P); ctx.fillRect(cx + 10 * P, baseY - 22 * P, P, 18 * P);
+      ctx.fillRect(cx - 5 * P, baseY - 22 * P, P, 4 * P); ctx.fillRect(cx + 4 * P, baseY - 22 * P, P, 4 * P);
+      ctx.fillStyle = c.arch; ctx.fillRect(cx - 4 * P, baseY - 19 * P, 8 * P, 15 * P);
+      ctx.fillRect(cx - 3 * P, baseY - 20 * P, 6 * P, P); ctx.fillRect(cx - 2 * P, baseY - 21 * P, 4 * P, P);
+      ctx.fillStyle = c.archDeep; ctx.fillRect(cx - 3 * P, baseY - 18 * P, 6 * P, 14 * P); ctx.fillRect(cx - 2 * P, baseY - 19 * P, 4 * P, P);
+      ctx.fillStyle = c.archDark; ctx.fillRect(cx - 2 * P, baseY - 16 * P, 4 * P, 12 * P); ctx.fillRect(cx - P, baseY - 17 * P, 2 * P, P);
+      ctx.fillStyle = c.arch; ctx.fillRect(cx - 9 * P, baseY - 15 * P, 3 * P, 9 * P); ctx.fillRect(cx - 8 * P, baseY - 16 * P, 2 * P, P);
+      ctx.fillStyle = c.archDeep; ctx.fillRect(cx - 8 * P, baseY - 14 * P, 2 * P, 7 * P);
+      ctx.fillStyle = c.arch; ctx.fillRect(cx + 6 * P, baseY - 15 * P, 3 * P, 9 * P); ctx.fillRect(cx + 6 * P, baseY - 16 * P, 2 * P, P);
+      ctx.fillStyle = c.archDeep; ctx.fillRect(cx + 6 * P, baseY - 14 * P, 2 * P, 7 * P);
+      ctx.fillStyle = c.arch; ctx.fillRect(cx - 8 * P, baseY - 20 * P, 2 * P, 3 * P); ctx.fillRect(cx + 6 * P, baseY - 20 * P, 2 * P, 3 * P);
+      ctx.fillStyle = c.trim; ctx.fillRect(cx - 12 * P, baseY - 22 * P, 24 * P, P);
+      ctx.fillStyle = c.dome; ctx.fillRect(cx - 9 * P, baseY - 24 * P, 18 * P, 2 * P); ctx.fillRect(cx - 8 * P, baseY - 26 * P, 16 * P, 2 * P);
+      ctx.fillStyle = c.domeMid; ctx.fillRect(cx - 7 * P, baseY - 29 * P, 14 * P, 3 * P); ctx.fillRect(cx - 6 * P, baseY - 32 * P, 12 * P, 3 * P);
+      ctx.fillStyle = c.dome; ctx.fillRect(cx - 5 * P, baseY - 34 * P, 10 * P, 2 * P); ctx.fillRect(cx - 4 * P, baseY - 36 * P, 8 * P, 2 * P);
+      ctx.fillRect(cx - 3 * P, baseY - 38 * P, 6 * P, 2 * P); ctx.fillRect(cx - 2 * P, baseY - 39 * P, 4 * P, P); ctx.fillRect(cx - P, baseY - 40 * P, 2 * P, P);
+      ctx.fillStyle = 'rgba(255,255,255,0.25)'; ctx.fillRect(cx - 3 * P, baseY - 35 * P, 2 * P, 8 * P);
+      ctx.fillStyle = c.trim; ctx.fillRect(cx, baseY - 44 * P, P, 4 * P);
+      ctx.fillStyle = c.arch; ctx.fillRect(cx - P, baseY - 42 * P, 3 * P, P);
+      ctx.fillStyle = c.domeMid; ctx.fillRect(cx - 11 * P, baseY - 25 * P, 4 * P, P); ctx.fillRect(cx - 10 * P, baseY - 27 * P, 3 * P, 2 * P); ctx.fillRect(cx - 10 * P, baseY - 28 * P, 2 * P, P);
+      ctx.fillStyle = c.trim; ctx.fillRect(cx - 9 * P, baseY - 29 * P, P, P);
+      ctx.fillStyle = c.domeMid; ctx.fillRect(cx + 7 * P, baseY - 25 * P, 4 * P, P); ctx.fillRect(cx + 7 * P, baseY - 27 * P, 3 * P, 2 * P); ctx.fillRect(cx + 8 * P, baseY - 28 * P, 2 * P, P);
+      ctx.fillStyle = c.trim; ctx.fillRect(cx + 9 * P, baseY - 29 * P, P, P);
+      function mn(mx) {
+        // Minaret base block
+        ctx.fillStyle = c.wallShade; ctx.fillRect(mx - P, baseY - 3 * P, 5 * P, 3 * P);
+        // Tower
+        ctx.fillStyle = c.wall; ctx.fillRect(mx, baseY - 28 * P, 3 * P, 25 * P);
+        ctx.fillStyle = c.wallShade; ctx.fillRect(mx + 2 * P, baseY - 28 * P, P, 25 * P);
+        // Bands
+        ctx.fillStyle = c.trim; ctx.fillRect(mx - P, baseY - 10 * P, 5 * P, P); ctx.fillRect(mx - P, baseY - 18 * P, 5 * P, P); ctx.fillRect(mx - P, baseY - 24 * P, 5 * P, P);
+        ctx.fillStyle = c.wallMid; ctx.fillRect(mx - P, baseY - 11 * P, 5 * P, P); ctx.fillRect(mx - P, baseY - 19 * P, 5 * P, P);
+        // Top dome
+        ctx.fillStyle = c.domeMid; ctx.fillRect(mx, baseY - 30 * P, 3 * P, 2 * P); ctx.fillRect(mx + P, baseY - 31 * P, P, P);
+        ctx.fillStyle = c.trim; ctx.fillRect(mx + P, baseY - 33 * P, P, 2 * P);
+      }
+      mn(cx - 26 * P); mn(cx - 17 * P); mn(cx + 15 * P); mn(cx + 24 * P);
+      ctx.restore();
+    }
+
+    // Draw a single Mario-style brick block
+    function drawMarioBrick(x, y, size) {
+      var S = size;
+      var m = 2; // mortar thickness (fixed, not scaled)
+      var h = Math.floor((S - m) / 2); // half-brick height
+      var hw = Math.floor((S - m) / 2); // half-brick width
+
+      // Background mortar color
+      ctx.fillStyle = '#1a1a1a';
+      ctx.fillRect(x, y, S, S);
+
+      // Draw 4 sub-bricks (2 rows, offset pattern)
+      // Row 1: one full-width brick split in middle
+      drawSubBrick(x, y, S, h);
+      // Vertical mortar in row 1
+      ctx.fillStyle = '#1a1a1a';
+      ctx.fillRect(x + hw, y, m, h);
+
+      // Row 2: offset - splits at 1/4 and 3/4
+      var y2 = y + h + m;
+      drawSubBrick(x, y2, S, h);
+      // Vertical mortar in row 2 (offset)
+      ctx.fillStyle = '#1a1a1a';
+      var q = Math.floor(S / 4);
+      ctx.fillRect(x + q, y2, m, h);
+      ctx.fillRect(x + q + hw, y2, m, h);
+    }
+
+    function drawSubBrick(x, y, w, h) {
+      var e = 3; // edge highlight/shadow width
+      // Main brick color
+      ctx.fillStyle = '#C84C0C';
+      ctx.fillRect(x, y, w, h);
+      // Top highlight
+      ctx.fillStyle = '#E8983C';
+      ctx.fillRect(x, y, w, e);
+      // Left highlight
+      ctx.fillRect(x, y, e, h);
+      // Bottom shadow
+      ctx.fillStyle = '#8C3400';
+      ctx.fillRect(x, y + h - e, w, e);
+      // Right shadow
+      ctx.fillRect(x + w - e, y, e, h);
+      // Bright top-left corner
+      ctx.fillStyle = '#F8B878';
+      ctx.fillRect(x, y, e, e);
+      // Dark bottom-right corner
+      ctx.fillStyle = '#601800';
+      ctx.fillRect(x + w - e, y + h - e, e, e);
+    }
+
+    // Brick pyramid config
+    var BRICK_TOOLS = ['FIGMA', 'CLAUDE AI', 'AFFINITY', 'NIFTY', 'NOTION'];
+    var BRICK_LOGOS = {};
+    var BRICK_LOGO_FILES = {
+      'FIGMA': 'assets/images/FG.svg',
+      'CLAUDE AI': 'assets/images/Claude.svg',
+      'AFFINITY': 'assets/images/Affinity.svg',
+      'NIFTY': 'assets/images/Nifty.svg',
+      'NOTION': 'assets/images/Notion..svg'
+    };
+    for (var k in BRICK_LOGO_FILES) {
+      var img = document.createElement('img');
+      img.src = BRICK_LOGO_FILES[k];
+      BRICK_LOGOS[k] = img;
+    }
+    var BS = 55; // brick size (square)
+    var BRICK_GAP = 0;
+    var BRICK_COL_W = BS;
+    // Pyramid: 3 steps up + 12 flat top + 3 steps down = 18 columns
+    var PYRAMID_COLS = 18;
+    // Heights per column: ascending, flat top, descending
+    var PYRAMID_HEIGHTS = [1, 2, 3, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 3, 2, 1];
+    var PYRAMID_MAX_H = 4;
+    var BRICK_TOTAL_W = PYRAMID_COLS * BRICK_COL_W;
+
+    // Coin animation state for each skill
+    var skillCoins = [];
+    for (var ci = 0; ci < BRICK_TOOLS.length; ci++) {
+      skillCoins.push({ active: false, triggered: false, y: 0, spin: 0, vy: 0 });
+    }
+
+    function getBrickStairInfo() {
+      var skillsCenter = SECTIONS[2].worldX + SECTIONS[2].width / 2;
+      var startX = skillsCenter - BRICK_TOTAL_W / 2;
+      return { centerX: skillsCenter, startX: startX, endX: startX + BRICK_TOTAL_W };
+    }
+
+    function getPyramidColHeight(col) {
+      if (col < 0 || col >= PYRAMID_COLS) return 0;
+      return PYRAMID_HEIGHTS[col];
+    }
+
+    // Draw brick pyramid for Skills section
+    function drawBrickStage(screenX, baseY) {
+      var startX = screenX - BRICK_TOTAL_W / 2;
+
+      for (var col = 0; col < PYRAMID_COLS; col++) {
+        var bricks = PYRAMID_HEIGHTS[col];
+        var cx = startX + col * BRICK_COL_W;
+
+        for (var row = 0; row < bricks; row++) {
+          var by = baseY - (row + 1) * (BS + BRICK_GAP);
+          drawMarioBrick(cx, by, BS);
+        }
+      }
+
+      // Draw skill labels, logo boxes, and coins on flat top
+      var flatStartCol = 3; // first flat column (0-indexed)
+      var flatCols = 12; // number of flat columns
+      var spacing = (flatCols * BRICK_COL_W) / BRICK_TOOLS.length;
+      var topY = baseY - PYRAMID_MAX_H * BS;
+      var boxSize = 40;
+      var boxGap = 8;
+
+      for (var i = 0; i < BRICK_TOOLS.length; i++) {
+        var cx = startX + flatStartCol * BRICK_COL_W + spacing * i + spacing / 2;
+
+        // Logo square box
+        var bx = cx - boxSize / 2;
+        var byy = topY - boxSize - boxGap - 20;
+        ctx.fillStyle = '#fff';
+        ctx.fillRect(bx, byy, boxSize, boxSize);
+        ctx.strokeStyle = '#FFD700';
+        ctx.lineWidth = 2;
+        ctx.strokeRect(bx, byy, boxSize, boxSize);
+
+        // Draw SVG logo inside box
+        var logo = BRICK_LOGOS[BRICK_TOOLS[i]];
+        if (logo && logo.complete && logo.naturalWidth > 0) {
+          var pad = 6;
+          ctx.drawImage(logo, bx + pad, byy + pad, boxSize - pad * 2, boxSize - pad * 2);
+        }
+
+        // Skill label below box
+        ctx.save();
+        ctx.fillStyle = '#FFD700';
+        ctx.font = '8px "Press Start 2P", monospace';
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'top';
+        ctx.shadowColor = '#000';
+        ctx.shadowBlur = 0;
+        ctx.shadowOffsetX = 1;
+        ctx.shadowOffsetY = 1;
+        ctx.fillText(BRICK_TOOLS[i], cx, topY - boxGap - 14);
+        ctx.restore();
+
+        // Coin animation
+        var coin = skillCoins[i];
+        if (coin.active) {
+          var coinY = topY - boxSize - boxGap - 20 - coin.y;
+          var coinR = boxSize / 2;
+          var coinScaleX = Math.abs(Math.cos(coin.spin));
+          ctx.save();
+          ctx.translate(cx, coinY);
+          ctx.scale(coinScaleX || 0.05, 1);
+          // Outer gold circle
+          ctx.beginPath();
+          ctx.arc(0, 0, coinR, 0, Math.PI * 2);
+          ctx.fillStyle = '#FFD700';
+          ctx.fill();
+          // Inner lighter circle
+          ctx.beginPath();
+          ctx.arc(0, 0, coinR * 0.75, 0, Math.PI * 2);
+          ctx.fillStyle = '#FFEC80';
+          ctx.fill();
+          // Dollar sign or star
+          ctx.fillStyle = '#DAA520';
+          ctx.font = (coinR) + 'px "Press Start 2P", monospace';
+          ctx.textAlign = 'center';
+          ctx.textBaseline = 'middle';
+          ctx.fillText('₹', 0, 2);
+          ctx.restore();
+        }
+      }
+    }
+
+    // Draw
+    function draw() {
+      ctx.clearRect(0, 0, W, H);
+      drawSky();
+
+      // Only show clouds in the landing (hero) section
+      for (var i = 0; i < clouds.length; i++) {
+        var c = clouds[i];
+        if (c.worldX > SECTIONS[0].width) continue;
+        var sx = c.worldX - cameraX * 0.3;
+        if (sx < -120 || sx > W + 120) continue;
+        drawCloud(sx, c.y, c.scale);
+      }
+
+      for (var i = 0; i < trees.length; i++) {
+        var t = trees[i];
+        var sx = t.worldX - cameraX * 0.7;
+        if (sx < -100 || sx > W + 100) continue;
+        drawTree(sx, t.scale);
+      }
+
+      for (var i = 0; i < bushes.length; i++) {
+        var b = bushes[i];
+        var sx = b.worldX - cameraX * 0.7;
+        if (sx < -80 || sx > W + 80) continue;
+        drawBush(sx, b.scale);
+      }
+
+      // Taj Mahal on landing page left side
+      var tajX = -30 - cameraX * 0.5;
+      if (tajX > -350 && tajX < W + 350) {
+        drawTajMahal(tajX, GROUND_Y - 5, 1.5);
+      }
+
+      // Brick staircase in Skills section
+      var skillsSection = SECTIONS[2];
+      var brickScreenX = skillsSection.worldX + skillsSection.width / 2 - cameraX;
+      if (brickScreenX > -400 && brickScreenX < W + 400) {
+        drawBrickStage(brickScreenX, GROUND_Y);
+      }
+
+      drawGround();
+
+      // Flowers — drawn on top of ground
+      for (var i = 0; i < flowers.length; i++) {
+        var f = flowers[i];
+        var sx = f.worldX - cameraX;
+        if (sx < -20 || sx > W + 20) continue;
+        drawFlower(sx);
+      }
+
+      drawCharacter(W / 2);
+
+      updateOverlay();
+    }
+
+    function loop() {
+      update();
+      draw();
+      requestAnimationFrame(loop);
+    }
+
+    generateSceneryAround(0);
+    loop();
+  </script>
+</body>
+
+</html>
